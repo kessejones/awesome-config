@@ -12,11 +12,11 @@ local config = require("config")
 
 local function update_tag(item, tag, index)
     if tag.selected then
-        item:get_children_by_id("tag")[1].markup = helper.colorize_text("", beautiful.xcolor2)
+        item:get_children_by_id("tag")[1].markup = helper.colorize_text("", beautiful.xcolor2)
     elseif #tag:clients() > 0 then
         item:get_children_by_id("tag")[1].markup = helper.colorize_text("", beautiful.xcolorS2)
     else
-        item:get_children_by_id("tag")[1].markup = helper.colorize_text("", beautiful.xcolorS2)
+        item:get_children_by_id("tag")[1].markup = helper.colorize_text("", beautiful.xcolorS2)
     end
 end
 
@@ -63,7 +63,6 @@ function M.new(s)
                 update_tag(self, c3, index)
                 ui.add_hover_cursor(self, "hand1")
             end,
-
             update_callback = function(self, c3, index, object)
                 update_tag(self, c3, index)
             end,
