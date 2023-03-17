@@ -17,4 +17,17 @@ function M.init_placement(c)
     }
 end
 
+function M.set_width(c, width)
+    c.width = width - (2 * c.border_width)
+end
+
+function M.set_height(c, height)
+    c.height = height - (2 * c.border_width)
+end
+
+function M.set_bordered_size(c, width, height)
+    M.set_height(c, height)
+    M.set_width(c, width)
+end
+
 return M

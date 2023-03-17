@@ -2,6 +2,9 @@ local beautiful = require("beautiful")
 local gears = require("gears")
 local awful = require("awful")
 local helper = require("helpers")
+local ch = require("helpers.client")
+
+local naughty = require("naughty")
 
 local function window_rounded(c)
     c.shape = function(cr, w, h)
@@ -69,7 +72,14 @@ end)
 client.connect_signal("property::floating", function(c)
     c.ontop = c.floating
     if c.floating then
-        awful.placement.centered(c)
+        local g = c.screen.geometry
+        local sw, sh = g.width, g.height
+
+        ch.set_bordered_size(c, sw / 2, sh / 2)
+
+        gears.timer.delayed_call(function()
+            awful.placement.centered(c)
+        end)
     end
 end)
 

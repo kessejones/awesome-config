@@ -3,6 +3,7 @@ local gears = require("gears")
 local config = require("config")
 local default = require("default")
 local helper = require("helpers.ui")
+local ch = require("helpers.client")
 
 local ResizeOrientation = {
     Horizontal = 0,
@@ -85,11 +86,24 @@ local function focus_client_direction(dir)
     end
 end
 
-local function move_client_direction(dir)
+local function move_client_direction(dir, wide)
+    wide = wide or false
+
     local client_focused = client.focus
 
     if client_focused.floating then
-        local value = 10
+        local vertical_value = 90
+        local horizontal_value = 80
+
+        local value = 30
+        if wide then
+            if dir == Direction.Down or dir == Direction.Up then
+                value = vertical_value
+            else
+                value = horizontal_value
+            end
+        end
+
         if dir == Direction.Down then
             local screen_in_direction = client_focused.screen:get_next_in_direction(dir)
             local screen = client_focused.screen
@@ -109,7 +123,6 @@ local function move_client_direction(dir)
         elseif dir == Direction.Left then
             local point_x = 0
             local screen_in_direction = client_focused.screen:get_next_in_direction(dir)
-
             if not screen_in_direction and client_focused.x - value < point_x then
                 return
             end
@@ -117,8 +130,8 @@ local function move_client_direction(dir)
         elseif dir == Direction.Right then
             local screen_in_direction = client_focused.screen:get_next_in_direction(dir)
             local screen = client_focused.screen
-            local limit = screen.geometry.x + screen.geometry.width - client_focused.width
-            if not screen_in_direction and client_focused.x + value > limit then
+            local limit = screen.geometry.x + screen.geometry.width
+            if not screen_in_direction and client_focused.x + client_focused.width + value > limit then
                 return
             end
             client_focused.x = client_focused.x + value
@@ -151,29 +164,61 @@ local function move_client_direction(dir)
     end)
 end
 
-local function resize_client_by_orientation(orientation, mode)
+local function resize_client_by_orientation(orientation, mode, wide)
+    wide = wide or false
     local focused = client.focus
     local screen_focused = awful.screen.focused()
-    local tile_step = 0.05
     local current_tag = screen_focused.selected_tag
 
-    local layout_can_resize = function()
+    local function layout_can_resize()
         return current_tag.layout ~= awful.layout.layouts[1]
     end
 
-    local grow_value = 10
+    local tile_step = 0.05
+    local wide_vertical_value = 90
+    local wide_horizontal_value = 80
+
+    local grow_value = 30
+    if wide then
+        if orientation == ResizeOrientation.Vertical then
+            grow_value = wide_vertical_value
+        else
+            grow_value = wide_horizontal_value
+        end
+    end
+
     if mode == ResizeMode.Decrease then
         grow_value = -grow_value
     end
 
+    local function client_can_resize_width()
+        local screen = focused.screen
+        local limit = screen.geometry.x + screen.geometry.width
+
+        local w = focused.width + grow_value
+        if focused.x + w > limit then
+            return false
+        end
+
+        return w >= focused.size_hints.min_width
+    end
+
+    local function client_can_resize_height()
+        local screen = focused.screen
+        local limit = screen.geometry.y + screen.geometry.height
+        local h = focused.height + grow_value
+        if focused.y + h > limit then
+            return false
+        end
+
+        return h >= focused.size_hints.min_height
+    end
+
     if orientation == ResizeOrientation.Horizontal then
         if focused.floating then
-            local screen = focused.screen
-            local limit = screen.geometry.x + screen.geometry.width
-            if focused.x + focused.width + grow_value > limit then
-                return
+            if client_can_resize_width() then
+                focused.width = focused.width + grow_value
             end
-            focused.width = focused.width + grow_value
         else
             if layout_can_resize() then
                 awful.tag.incmwfact(tile_step * mode)
@@ -181,15 +226,13 @@ local function resize_client_by_orientation(orientation, mode)
         end
     elseif orientation == ResizeOrientation.Vertical then
         if focused.floating then
-            local screen = focused.screen
-            local limit = screen.geometry.y + screen.geometry.height
-            if focused.y + focused.height + grow_value > limit then
-                return
+            if client_can_resize_height() then
+                focused.height = focused.height + grow_value
             end
-            focused.height = focused.height + grow_value
-        end
-        if layout_can_resize() then
-            awful.client.incwfact(tile_step * mode)
+        else
+            if layout_can_resize() then
+                awful.client.incwfact(tile_step * mode)
+            end
         end
     end
 end
@@ -266,10 +309,24 @@ function M.get_global_keys()
                         end,
                     },
                     {
+                        { modKey, Modifiers.Shift },
+                        "H",
+                        function()
+                            resize_client_by_orientation(ResizeOrientation.Horizontal, ResizeMode.Decrease, true)
+                        end,
+                    },
+                    {
                         { modKey },
                         "l",
                         function()
                             resize_client_by_orientation(ResizeOrientation.Horizontal, ResizeMode.Increase)
+                        end,
+                    },
+                    {
+                        { modKey, Modifiers.Shift },
+                        "L",
+                        function()
+                            resize_client_by_orientation(ResizeOrientation.Horizontal, ResizeMode.Increase, true)
                         end,
                     },
                     {
@@ -280,10 +337,24 @@ function M.get_global_keys()
                         end,
                     },
                     {
+                        { modKey, Modifiers.Shift },
+                        "J",
+                        function()
+                            resize_client_by_orientation(ResizeOrientation.Vertical, ResizeMode.Increase, true)
+                        end,
+                    },
+                    {
                         { modKey },
                         "k",
                         function()
                             resize_client_by_orientation(ResizeOrientation.Vertical, ResizeMode.Decrease)
+                        end,
+                    },
+                    {
+                        { modKey, Modifiers.Shift },
+                        "K",
+                        function()
+                            resize_client_by_orientation(ResizeOrientation.Vertical, ResizeMode.Decrease, true)
                         end,
                     },
                     {
@@ -377,10 +448,24 @@ function M.get_client_keys()
                         end,
                     },
                     {
+                        { modKey, Modifiers.Shift },
+                        "H",
+                        function()
+                            move_client_direction(Direction.Left, true)
+                        end,
+                    },
+                    {
                         { modKey },
                         "l",
                         function()
                             move_client_direction(Direction.Right)
+                        end,
+                    },
+                    {
+                        { modKey, Modifiers.Shift },
+                        "L",
+                        function()
+                            move_client_direction(Direction.Right, true)
                         end,
                     },
                     {
@@ -391,10 +476,24 @@ function M.get_client_keys()
                         end,
                     },
                     {
+                        { modKey, Modifiers.Shift },
+                        "J",
+                        function()
+                            move_client_direction(Direction.Down, true)
+                        end,
+                    },
+                    {
                         { modKey },
                         "k",
                         function()
                             move_client_direction(Direction.Up)
+                        end,
+                    },
+                    {
+                        { modKey, Modifiers.Shift },
+                        "K",
+                        function()
+                            move_client_direction(Direction.Up, true)
                         end,
                     },
                     {
