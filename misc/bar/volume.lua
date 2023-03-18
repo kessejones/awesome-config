@@ -44,9 +44,33 @@ function M.new(s)
     })
 
     local audio_menu = require("misc.audio").new(s)
-    widget:buttons(awful.button({}, 1, function()
-        audio_menu.visible = not audio_menu.visible
-    end))
+    local widget_tooltip = awful.tooltip({
+        margins = 10,
+    })
+
+    local function update_tooltip()
+        widget_tooltip.visible = true
+        require("lib.pulseaudio").get_volume(function(volume)
+            widget_tooltip.text = string.format("Volume %d%%", volume)
+        end)
+    end
+
+    widget:buttons(gears.table.join(
+        awful.button({}, 1, function()
+            audio_menu.visible = not audio_menu.visible
+        end),
+        awful.button({}, 2, function()
+            require("lib.pulseaudio").toggle_mute()
+        end),
+        awful.button({}, 4, function()
+            require("lib.pulseaudio").volume_up()
+            update_tooltip()
+        end),
+        awful.button({}, 5, function()
+            require("lib.pulseaudio").volume_down()
+            update_tooltip()
+        end)
+    ))
 
     require("lib.pulseaudio").on_volume_change(function(volume, muted)
         if muted then
@@ -57,6 +81,10 @@ function M.new(s)
     end)
 
     ui.add_hover_cursor(widget, "hand1")
+
+    widget:connect_signal("mouse::leave", function()
+        widget_tooltip.visible = false
+    end)
 
     return widget
 end

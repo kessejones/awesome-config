@@ -1,8 +1,6 @@
 local awful = require("awful")
 local fmt = string.format
 
-local naughty = require("naughty")
-
 local M = {}
 
 local volume_step = 0.1
