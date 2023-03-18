@@ -4,8 +4,6 @@ local awful = require("awful")
 local helper = require("helpers")
 local ch = require("helpers.client")
 
-local naughty = require("naughty")
-
 local function window_rounded(c)
     c.shape = function(cr, w, h)
         if not c.fullscreen and not c.maximized then
@@ -84,3 +82,7 @@ client.connect_signal("property::floating", function(c)
 end)
 
 screen.connect_signal("property::geometry", helper.wallpaper.set)
+
+screen.connect_signal("primary_changed", function()
+    awesome.emit_signal("wibar::systray")
+end)

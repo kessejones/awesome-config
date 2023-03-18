@@ -24,7 +24,8 @@ function M.new(s)
     local date = require("misc.bar.date").new(s)
     local layoutbox = require("misc.bar.layoutbox").new(s)
     local battery = require("misc.bar.battery").new()
-    local systray = awful.widget.only_on_screen(require("misc.bar.systray").new(), screen.primary)
+    local systray = require("misc.bar.systray").new()
+    systray.visible = screen.primary == s
 
     layoutbox:buttons(gears.table.join(
         awful.button({}, 1, function()
@@ -98,6 +99,10 @@ function M.new(s)
         if screen == s then
             wibar.visible = visible
         end
+    end)
+
+    awesome.connect_signal("wibar::systray", function()
+        systray.visible = screen.primary == s
     end)
 
     return wibar
