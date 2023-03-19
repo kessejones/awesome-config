@@ -3,7 +3,6 @@ local gears = require("gears")
 local config = require("config")
 local default = require("default")
 local helper = require("helpers.ui")
-local ch = require("helpers.client")
 
 local ResizeOrientation = {
     Horizontal = 0,
