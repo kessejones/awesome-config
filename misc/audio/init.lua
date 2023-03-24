@@ -18,7 +18,7 @@ function M.new(s)
         minimum_width = dpi(280),
         minimum_height = dpi(100),
         border_width = beautiful.border_width,
-        border_color = beautiful.border_normal,
+        border_color = beautiful.border_focus,
         placement = function(c)
             awful.placement.top_right(c, { margins = dpi(40) })
         end,

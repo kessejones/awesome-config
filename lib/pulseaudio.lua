@@ -38,7 +38,7 @@ function M.get_volume(callback)
     awful.spawn.easy_async(pactl_default_sink, function(output_sink)
         awful.spawn.easy_async(fmt("%s %s", pactl_get_volume, output_sink), function(output_volume)
             local volume = output_volume:match("(%d+)%% /")
-            local volume_number = tonumber(volume)
+            local volume_number = tonumber(volume) or 0
 
             if callback and type(callback) == "function" then
                 callback(volume_number)

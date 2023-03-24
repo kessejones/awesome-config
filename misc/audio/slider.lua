@@ -13,16 +13,36 @@ function M.new(args)
 
     local widget_slider = wibox.widget({
         widget = wibox.widget.slider,
-        shape = gears.shape.rounded_bar,
-        bar_shape = gears.shape.rounded_bar,
-        bar_color = beautiful.border_normal,
-        bar_margins = { bottom = dpi(10), top = dpi(10) },
-        handle_color = beautiful.border_focus,
         handle_shape = gears.shape.circle,
-        handle_border_color = beautiful.border_focus,
-        handle_border_width = dpi(5),
+        bar_color = beautiful.transparent,
+        handle_color = beautiful.border_focus,
+        handle_border_color = beautiful.border_normal,
+        handle_border_width = dpi(3),
+        handle_width = dpi(25),
+        margins = { left = 10, right = 10 },
+    })
+
+    local widget_progressbar = wibox.widget({
+        widget = wibox.widget.progressbar,
+        shape = gears.shape.rounded_bar,
+        bar_color = beautiful.border_normal,
+        background_color = beautiful.border_normal,
+        color = beautiful.border_focus,
         value = 0,
-        forced_width = dpi(200),
+        max_value = 100,
+        bar_border_width = 0,
+        margins = {
+            top = dpi(8),
+            bottom = dpi(8),
+        },
+    })
+
+    local widget_slider_wrapper = wibox.widget({
+        widget_progressbar,
+        widget_slider,
+        layout = wibox.layout.stack,
+        forced_height = dpi(5),
+        forced_width = dpi(175),
     })
 
     local widget_icon = wibox.widget({
@@ -47,18 +67,20 @@ function M.new(args)
         end
 
         widget_text.markup = str.pad_left(c.value, 3, " ") .. "%"
+        widget_progressbar.value = c.value
     end)
 
     local widget = wibox.widget({
         layout = wibox.container.margin,
         left = dpi(10),
         right = dpi(10),
+        top = dpi(15),
         {
             widget_icon,
-            widget_slider,
+            widget_slider_wrapper,
             widget_text,
             layout = wibox.layout.fixed.horizontal,
-            forced_height = dpi(40),
+            forced_width = dpi(250),
             spacing = dpi(10),
         },
         set_value = function(self, value)
