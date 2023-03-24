@@ -11,6 +11,7 @@ local M = {}
 
 function M.new(s)
     local layoutbox = awful.widget.layoutbox(s)
+    layoutbox._layoutbox_tooltip.margins = beautiful.tooltip_margins
 
     local widget = wibox.widget({
         {

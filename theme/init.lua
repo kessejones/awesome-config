@@ -41,4 +41,7 @@ theme.tooltip_shape = function(cr, w, h)
     require("gears").shape.rounded_rect(cr, w, h, theme.border_radius)
 end
 
+theme.notification_border_width = theme.border_width
+theme.notification_border_color = theme.border_focus
+
 return theme

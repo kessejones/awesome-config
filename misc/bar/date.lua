@@ -47,7 +47,7 @@ function M.new(s)
         widget = wibox.container.background,
         bg = beautiful.bg_color,
         border_width = beautiful.border_width,
-        border_color = beautiful.border_normal,
+        border_color = beautiful.border_focus,
         placement = function(c)
             awful.placement.top(c, { margins = dpi(40) })
         end,

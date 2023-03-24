@@ -45,15 +45,8 @@ function M.new(s)
 
     local audio_menu = require("misc.audio").new(s)
     local widget_tooltip = awful.tooltip({
-        margins = 10,
+        margins = beautiful.tooltip_margins,
     })
-
-    local function update_tooltip()
-        widget_tooltip.visible = true
-        require("lib.pulseaudio").get_volume(function(volume)
-            widget_tooltip.text = string.format("Volume %d%%", volume)
-        end)
-    end
 
     widget:buttons(gears.table.join(
         awful.button({}, 1, function()
@@ -64,11 +57,11 @@ function M.new(s)
         end),
         awful.button({}, 4, function()
             require("lib.pulseaudio").volume_up()
-            update_tooltip()
+            widget_tooltip.visible = true
         end),
         awful.button({}, 5, function()
             require("lib.pulseaudio").volume_down()
-            update_tooltip()
+            widget_tooltip.visible = true
         end)
     ))
 
@@ -78,6 +71,8 @@ function M.new(s)
         else
             icon.image = beautiful.get_asset("catppuccin/assets/volume-on.png")
         end
+
+        widget_tooltip.text = string.format("Volume %d%%", volume)
     end)
 
     ui.add_hover_cursor(widget, "hand1")
