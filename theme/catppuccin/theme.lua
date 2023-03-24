@@ -74,7 +74,7 @@ theme.volume_off = themes_path .. "catppuccin/assets/volume-off.png"
 theme.pfp = themes_path .. "catppuccin/assets/pfp.jpg"
 
 theme.font_size = 10
-theme.font_name = "FiraCode Nerd Font"
+theme.font_name = "JetBrainsMono Nerd Font Mono"
 theme.font = string.format("%s %s", theme.font_name, theme.font_size)
 
 theme.titlebar_bg_focus = theme.xcolorbase
@@ -96,12 +96,12 @@ theme.border_normal = theme.xcolorS0
 theme.border_focus = theme.xcolor2
 theme.border_marked = "#91231c"
 
-theme.menu_font = "FiraCode Nerd Font 12"
+theme.menu_font = theme.font_name .. " 10"
 theme.menu_bg_focus = theme.xcolorbase
 theme.menu_fg_focus = theme.xcolor2
 theme.menu_border_width = dpi(2)
---theme.menu_border_radius = dpi()
-theme.menu_border_color = theme.xcolorS0
+-- theme.menu_border_color = theme.xcolorS0
+theme.menu_border_color = theme.border_focus
 --theme.menu_submenu_icon = themes_path.."catppuccin/submenu.png"
 theme.submenu = "»  "
 theme.menu_height = dpi(37)
@@ -110,12 +110,12 @@ theme.menu_width = dpi(194)
 theme.tasklist_bg_focus = theme.xcolorbase
 theme.tasklist_fg_focus = theme.xcolor1
 theme.tasklist_disable_icon = true
-theme.tasklist_font = "FiraCode Nerd Font 11"
+theme.tasklist_font = theme.font_name .. " 10"
 
 theme.taglist_spacing = dpi(2)
 theme.taglist_bg_focus = theme.xcolorbase
 theme.taglist_disable_icon = true
-theme.taglist_font = "FiraCode Nerd Font 11"
+theme.taglist_font = theme.font_name .. " 10"
 theme.taglist_fg_focus = theme.xcolor2 --"#7e9dde"
 theme.taglist_fg_empty = theme.xcolorS2
 theme.taglist_fg_occupied = "#526c96"
@@ -134,8 +134,8 @@ theme.snap_shape = helpers.ui.rrect(0)
 theme.hotkeys_shape = helpers.ui.rrect(12)
 theme.hotkeys_border_color = theme.xcolor5
 theme.hotkeys_modifiers_fg = theme.xcolorO2
-theme.hotkeys_font = "FiraCode Nerd Font 9"
-theme.hotkeys_description_font = "FiraCode Nerd Font 9"
+theme.hotkeys_font = theme.font_name .. " 9"
+theme.hotkeys_description_font = theme.font_name .. " 9"
 
 -- Layoutlist
 theme.layoutlist_shape_selected = helpers.ui.rrect(7)
