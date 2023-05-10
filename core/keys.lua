@@ -243,11 +243,6 @@ function M.get_global_keys()
             awful.spawn(default.launcher)
         end, { description = "open launcher", group = "apps" }),
 
-        -- session
-        awful.key({ modKey }, "w", function()
-            awful.spawn("rofi -show p -modi p:rofi-power-menu")
-        end, { description = "session options", group = "session" }),
-
         -- apps
         awful.key({ modKey }, "b", function()
             awful.spawn(default.webbrowser)
