@@ -37,10 +37,7 @@ function M.new(s)
             end,
         },
         widget = wibox.container.margin,
-        left = dpi(5),
-        right = dpi(5),
-        top = dpi(5),
-        bottom = dpi(5),
+        margins = dpi(5),
     })
 
     local audio_menu = require("misc.audio").new(s)

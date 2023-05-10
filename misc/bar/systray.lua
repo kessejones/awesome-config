@@ -17,7 +17,10 @@ function M.new()
             {
                 systray,
                 widget = wibox.container.margin,
+                left = 5,
+                right = 5,
             },
+            shape_clip = true,
             widget = wibox.container.background,
             bg = beautiful.wibar_widget_bg,
             shape = function(cr, width, height)
