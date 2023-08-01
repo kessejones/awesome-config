@@ -14,6 +14,7 @@ function M.new(s)
         position = "top",
         screen = s,
         height = dpi(38),
+        type = "dock",
     })
 
     local tagslist = tags.new(s)

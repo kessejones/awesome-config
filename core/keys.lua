@@ -199,7 +199,7 @@ local function resize_client_by_orientation(orientation, mode, wide)
             return false
         end
 
-        return w >= focused.size_hints.min_width
+        return w >= (focused.size_hints.min_width or 0)
     end
 
     local function client_can_resize_height()
@@ -210,7 +210,7 @@ local function resize_client_by_orientation(orientation, mode, wide)
             return false
         end
 
-        return h >= focused.size_hints.min_height
+        return h >= (focused.size_hints.min_height or 0)
     end
 
     if orientation == ResizeOrientation.Horizontal then
