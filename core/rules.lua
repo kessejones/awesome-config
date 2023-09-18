@@ -17,6 +17,7 @@ awful.rules.rules = {
             placement = awful.placement.no_overlap + awful.placement.no_offscreen,
             maximized = false,
             floating = false,
+            requests_no_titlebar = true,
         },
     },
     {
@@ -26,6 +27,7 @@ awful.rules.rules = {
             border_color = beautiful.border_normal,
             maximized = false,
             floating = false,
+            requests_no_titlebar = true,
         },
     },
     {
@@ -36,6 +38,7 @@ awful.rules.rules = {
         except = { instance = "Navigator" },
         properties = {
             floating = true,
+            requests_no_titlebar = false,
             placement = awful.placement.centered,
         },
     },

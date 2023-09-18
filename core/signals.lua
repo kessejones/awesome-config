@@ -1,8 +1,12 @@
 local beautiful = require("beautiful")
 local gears = require("gears")
 local awful = require("awful")
+local wibox = require("wibox")
 local helper = require("helpers")
 local ch = require("helpers.client")
+
+local xresources = require("beautiful.xresources")
+local dpi = xresources.apply_dpi
 
 local function window_rounded(c)
     c.shape = function(cr, w, h)
@@ -12,6 +16,84 @@ local function window_rounded(c)
             gears.shape.rounded_rect(cr, w, h, 0)
         end
     end
+end
+
+local function request_titlebar(c)
+    if c.requests_no_titlebar then
+        awful.titlebar.hide(c)
+        return
+    end
+
+    awful.titlebar.enable_tooltip = false
+    local top_titlebar = awful.titlebar(c, {
+        height = beautiful.titlebar_height,
+        bg_normal = beautiful.xcolormantle,
+    })
+
+    -- buttons for the titlebar
+    local buttons = gears.table.join(
+        awful.button({}, 1, function()
+            client.focus = c
+            c:raise()
+            awful.mouse.client.move(c)
+        end),
+        awful.button({}, 3, function()
+            client.focus = c
+            c:raise()
+            awful.mouse.client.resize(c)
+        end)
+    )
+
+    local maximze_button = awful.titlebar.widget.maximizedbutton(c)
+    local ontop_button = awful.titlebar.widget.ontopbutton(c)
+    local close_button = awful.titlebar.widget.closebutton(c)
+    local icon_width = awful.titlebar.widget.iconwidget(c)
+
+    top_titlebar:setup({
+        { -- Left
+            {
+                layout = wibox.container.margin,
+                margins = dpi(5),
+                icon_width,
+            },
+            buttons = buttons,
+            layout = wibox.layout.fixed.horizontal,
+        },
+        { -- Middle
+            { -- Title
+                align = "center",
+                widget = awful.titlebar.widget.titlewidget(c),
+            },
+            buttons = buttons,
+            layout = wibox.layout.flex.horizontal,
+        },
+        { -- Right
+            {
+                layout = wibox.container.margin,
+                margins = dpi(5),
+                {
+                    {
+                        layout = wibox.container.margin,
+                        right = dpi(5),
+                        ontop_button,
+                    },
+                    {
+                        layout = wibox.container.margin,
+                        right = dpi(5),
+                        maximze_button,
+                    },
+                    {
+                        layout = wibox.container.margin,
+                        right = dpi(5),
+                        close_button,
+                    },
+                    layout = wibox.layout.align.horizontal,
+                },
+            },
+            layout = wibox.layout.fixed.horizontal(),
+        },
+        layout = wibox.layout.align.horizontal,
+    })
 end
 
 client.connect_signal("manage", function(c)
@@ -31,6 +113,13 @@ client.connect_signal("manage", function(c)
             iter_c.maximized = false
             iter_c.fullscreen = false
         end
+    end
+
+    local t = awful.screen.focused().selected_tag
+    local layout = t.layout
+
+    if layout.name == "floating" then
+        request_titlebar(c)
     end
 end)
 
@@ -78,6 +167,9 @@ client.connect_signal("property::floating", function(c)
         gears.timer.delayed_call(function()
             awful.placement.centered(c)
         end)
+        request_titlebar(c)
+    else
+        awful.titlebar.hide(c)
     end
 end)
 
@@ -85,4 +177,20 @@ screen.connect_signal("property::geometry", helper.wallpaper.set)
 
 screen.connect_signal("primary_changed", function()
     awesome.emit_signal("wibar::systray")
+end)
+tag.connect_signal("property::layout", function(t)
+    local layout = awful.tag.getproperty(t, "layout")
+    if layout.name == "floating" then
+        for _, client in ipairs(t:clients()) do
+            request_titlebar(client)
+        end
+    else
+        for _, client in ipairs(t:clients()) do
+            awful.titlebar.hide(client)
+        end
+    end
+end)
+
+client.connect_signal("request::titlebars", function(c)
+    request_titlebar(c)
 end)

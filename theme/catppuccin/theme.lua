@@ -200,9 +200,8 @@ theme.titlebar_minimize_button_focus_hover = themes_path .. "catppuccin/titlebar
 
 theme.titlebar_ontop_button_normal_inactive = themes_path .. "catppuccin/titlebar/unfocus.svg"
 theme.titlebar_ontop_button_focus_inactive = themes_path .. "catppuccin/titlebar/ontop.svg"
-
-theme.titlebar_ontop_button_normal_active = themes_path .. "catppuccin/titlebar/unfocus.svg"
-theme.titlebar_ontop_button_focus_active = themes_path .. "catppuccin/titlebar/ontop.svg"
+theme.titlebar_ontop_button_normal_active = themes_path .. "catppuccin/titlebar/ontop_unfocus_activated.png"
+theme.titlebar_ontop_button_focus_active = themes_path .. "catppuccin/titlebar/ontop_activated.png"
 
 -- theme.titlebar_sticky_button_normal_inactive = themes_path.."catppuccin/titlebar/sticky_normal_inactive.png"
 -- theme.titlebar_sticky_button_focus_inactive  = themes_path.."catppuccin/titlebar/sticky_focus_inactive.png"
