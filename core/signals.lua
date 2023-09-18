@@ -19,7 +19,7 @@ local function window_rounded(c)
 end
 
 local function request_titlebar(c)
-    if c.requests_no_titlebar then
+    if c.requests_no_titlebar == true then
         awful.titlebar.hide(c)
         return
     end

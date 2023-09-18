@@ -7,6 +7,7 @@ local wibox = require("wibox")
 
 local default = require("default")
 local ui = require("helpers.ui")
+local freedesktop = require("freedesktop")
 
 local M = {}
 
@@ -52,21 +53,33 @@ function M.new()
     }
 
     local menu_items = {
-        { "Awesome", awesome_menu },
+        { "Awesome", awesome_menu, beautiful.awesome_icon },
         { "Terminal", terminal_menu },
         { "Internet", internet_menu },
         { "Files", default.filemanager },
+        { "Applications", freedesktop.menu.build() },
     }
-    -- { "hotkeys", function() hotkeys_popup.show_help(nil, awful.screen.focused()) end },
 
     local main_menu = awful.menu({
         items = menu_items,
+        theme = {
+            icon_size = 16,
+        },
     })
     main_menu:get_root().wibox.shape = gears.shape.rounded_rect
 
     local launcher = awful.widget.launcher({
         image = beautiful.awesome_icon,
-        menu = main_menu,
+        -- menu = main_menu,
+        menu = freedesktop.menu.build({
+            before = {
+                { "System", awesome_menu },
+                { "Terminal", terminal_menu },
+                -- { "Internet", internet_menu },
+                -- { "Files", default.filemanager },
+                -- { "Applications", freedesktop.menu.build() },
+            },
+        }),
         clip_shape = gears.shape.squircle,
     })
 

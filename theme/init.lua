@@ -50,6 +50,8 @@ theme.notification_border_width = theme.border_width
 theme.notification_border_color = theme.border_focus
 theme.titlebar_height = dpi(8)
 theme.titlebar_fg_focus = theme.xcolor1
+theme.menu_font = theme.font_text_with_size(10, "Bold")
+
 -- theme.titlebar_fg_focus = theme.xcolor1
 
 return theme
