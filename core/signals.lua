@@ -178,6 +178,7 @@ screen.connect_signal("property::geometry", helper.wallpaper.set)
 screen.connect_signal("primary_changed", function()
     awesome.emit_signal("wibar::systray")
 end)
+
 tag.connect_signal("property::layout", function(t)
     local layout = awful.tag.getproperty(t, "layout")
     if layout.name == "floating" then
@@ -193,4 +194,18 @@ end)
 
 client.connect_signal("request::titlebars", function(c)
     request_titlebar(c)
+end)
+
+client.connect_signal("tagged", function(c)
+    if awesome.startup then
+        return
+    end
+
+    local tag = awful.screen.focused().selected_tag
+    local layout = tag.layout
+    if layout.name == "floating" then
+        request_titlebar(c)
+    else
+        awful.titlebar.hide(c)
+    end
 end)
