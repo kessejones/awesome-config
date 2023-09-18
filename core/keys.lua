@@ -89,8 +89,11 @@ local function move_client_direction(dir, wide)
     wide = wide or false
 
     local client_focused = client.focus
+    local screen = client_focused.screen
+    local tag = screen.selected_tag
+    local layout = tag.layout
 
-    if client_focused.floating then
+    if client_focused.floating or layout.name == "floating" then
         local vertical_value = 90
         local horizontal_value = 80
 
@@ -105,7 +108,6 @@ local function move_client_direction(dir, wide)
 
         if dir == Direction.Down then
             local screen_in_direction = client_focused.screen:get_next_in_direction(dir)
-            local screen = client_focused.screen
             local limit = screen.geometry.y + screen.geometry.height - client_focused.height
             if not screen_in_direction and client_focused.y + value > limit then
                 return
@@ -128,7 +130,6 @@ local function move_client_direction(dir, wide)
             client_focused.x = client_focused.x - value
         elseif dir == Direction.Right then
             local screen_in_direction = client_focused.screen:get_next_in_direction(dir)
-            local screen = client_focused.screen
             local limit = screen.geometry.x + screen.geometry.width
             if not screen_in_direction and client_focused.x + client_focused.width + value > limit then
                 return
