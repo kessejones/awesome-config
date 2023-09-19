@@ -80,7 +80,7 @@ function M.new(s)
         calendar_popup.visible = not calendar_popup.visible
     end)))
 
-    ui.add_hover_cursor(widget, "hand1")
+    ui.add_hover_cursor(widget, "hand2")
 
     return widget
 end

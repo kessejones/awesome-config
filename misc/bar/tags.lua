@@ -61,7 +61,7 @@ function M.new(s)
             widget = wibox.widget.textbox,
             create_callback = function(self, c3, index, object)
                 update_tag(self, c3, index)
-                ui.add_hover_cursor(self, "hand1")
+                ui.add_hover_cursor(self, "hand2")
             end,
             update_callback = function(self, c3, index, object)
                 update_tag(self, c3, index)

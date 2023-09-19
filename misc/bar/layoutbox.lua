@@ -40,7 +40,7 @@ function M.new(s)
         bottom = dpi(5),
     })
 
-    ui.add_hover_cursor(widget, "hand1")
+    ui.add_hover_cursor(widget, "hand2")
 
     return widget
 end

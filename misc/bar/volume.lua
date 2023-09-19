@@ -72,7 +72,7 @@ function M.new(s)
         widget_tooltip.text = string.format("Volume %d%%", volume)
     end)
 
-    ui.add_hover_cursor(widget, "hand1")
+    ui.add_hover_cursor(widget, "hand2")
 
     widget:connect_signal("mouse::leave", function()
         widget_tooltip.visible = false
