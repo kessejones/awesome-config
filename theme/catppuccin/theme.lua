@@ -74,7 +74,7 @@ theme.volume_off = themes_path .. "catppuccin/assets/volume-off.png"
 theme.pfp = themes_path .. "catppuccin/assets/pfp.jpg"
 
 theme.font_size = 10
-theme.font_name = "JetBrainsMono Nerd Font Mono"
+theme.font_name = "Ubuntu Nerd Font"
 theme.font = string.format("%s %s", theme.font_name, theme.font_size)
 
 theme.titlebar_bg_focus = theme.xcolorbase

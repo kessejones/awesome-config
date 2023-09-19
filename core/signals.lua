@@ -49,6 +49,9 @@ local function request_titlebar(c)
     local close_button = awful.titlebar.widget.closebutton(c)
     local icon_width = awful.titlebar.widget.iconwidget(c)
 
+    local title_widget = awful.titlebar.widget.titlewidget(c)
+    title_widget:set_font(beautiful.font_text_with_size(10, "bold"))
+
     top_titlebar:setup({
         { -- Left
             {
@@ -62,7 +65,7 @@ local function request_titlebar(c)
         { -- Middle
             { -- Title
                 align = "center",
-                widget = awful.titlebar.widget.titlewidget(c),
+                widget = title_widget,
             },
             buttons = buttons,
             layout = wibox.layout.flex.horizontal,
