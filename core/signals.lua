@@ -24,6 +24,8 @@ local function request_titlebar(c)
         return
     end
 
+    local window_height = c.height
+
     awful.titlebar.enable_tooltip = false
     local top_titlebar = awful.titlebar(c, {
         height = beautiful.titlebar_height,
@@ -97,6 +99,8 @@ local function request_titlebar(c)
         },
         layout = wibox.layout.align.horizontal,
     })
+
+    c.height = window_height
 end
 
 client.connect_signal("manage", function(c)
@@ -186,11 +190,15 @@ tag.connect_signal("property::layout", function(t)
     local layout = awful.tag.getproperty(t, "layout")
     if layout.name == "floating" then
         for _, client in ipairs(t:clients()) do
-            request_titlebar(client)
+            if not client.floating then
+                request_titlebar(client)
+            end
         end
     else
         for _, client in ipairs(t:clients()) do
-            awful.titlebar.hide(client)
+            if not client.floating then
+                awful.titlebar.hide(client)
+            end
         end
     end
 end)
