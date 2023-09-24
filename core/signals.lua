@@ -10,11 +10,11 @@ local dpi = xresources.apply_dpi
 
 local function window_rounded(c)
     c.shape = function(cr, w, h)
+        local radius = 0
         if not c.fullscreen and not c.maximized then
-            gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
-        else
-            gears.shape.rounded_rect(cr, w, h, 0)
+            radius = beautiful.border_radius
         end
+        gears.shape.rounded_rect(cr, w, h, radius)
     end
 end
 
@@ -25,6 +25,8 @@ local function request_titlebar(c)
     end
 
     local window_height = c.height
+    local window_x = c.x
+    local window_y = c.y
 
     awful.titlebar.enable_tooltip = false
     local top_titlebar = awful.titlebar(c, {
@@ -101,6 +103,8 @@ local function request_titlebar(c)
     })
 
     c.height = window_height
+    c.x = window_x
+    c.y = window_y
 end
 
 client.connect_signal("manage", function(c)
