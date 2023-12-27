@@ -1,8 +1,11 @@
 local awful = require("awful")
 local gears = require("gears")
 local config = require("config")
-local default = require("default")
 local helper = require("helpers.ui")
+
+local Key = require("lib.key")
+
+local apps = config.apps
 
 local ResizeOrientation = {
     Horizontal = 0,
@@ -21,41 +24,16 @@ local Direction = {
     Right = "right",
 }
 
-local Modifiers = {
-    Alt = "Mod1",
-    Super = "Mod4",
-    Shift = "Shift",
-    Ctrl = "Control",
-}
-
-local modKey = Modifiers.Alt
-
 local M = {}
 
-M.Modifiers = Modifiers
-M.modKey = modKey
-
-local function keys_move_client_to_tag()
-    local keys = {}
-
-    for i, name in ipairs(config.tags) do
-        local key = {
-            { modKey },
-            tostring(i),
-            function()
-                if client.focus then
-                    -- move focused client to the "i" tag and set the focus to this tag
-                    local t = awful.tag.find_by_name(awful.screen.focused(), name)
-                    client.focus:move_to_tag(t)
-                    t:view_only(t)
-                end
-            end,
-        }
-
-        table.insert(keys, key)
+local function move_client_to_tag(tag_name)
+    return function()
+        if client.focus then
+            local t = awful.tag.find_by_name(awful.screen.focused(), tag_name)
+            client.focus:move_to_tag(t)
+            t:view_only(t)
+        end
     end
-
-    return keys
 end
 
 local function focus_client_direction(dir)
@@ -237,318 +215,254 @@ local function resize_client_by_orientation(orientation, mode, wide)
     end
 end
 
+local global_keys = Key.create({
+    ["d"] = function()
+        awful.spawn(apps.launcher)
+    end,
+    ["b"] = function()
+        awful.spawn(apps.webbrowser)
+    end,
+    ["e"] = function()
+        awful.spawn(apps.filemanager)
+    end,
+    ["Return"] = function()
+        awful.spawn(apps.terminal)
+    end,
+    [";"] = function()
+        awful.spawn(apps.secondary_terminal)
+    end,
+    ["u"] = function()
+        awful.layout.inc(-1, screen.screen)
+    end,
+    ["i"] = function()
+        awful.layout.inc(1, screen.screen)
+    end,
+    ["h"] = function()
+        focus_client_direction("left")
+    end,
+    ["l"] = function()
+        focus_client_direction("right")
+    end,
+    ["j"] = function()
+        focus_client_direction("down")
+    end,
+    ["k"] = function()
+        focus_client_direction("up")
+    end,
+    [Key.shiffted("r")] = awesome.restart,
+    [Key.shiffted("q")] = awesome.quit,
+
+    ["p"] = function()
+        local s = awful.screen.focused()
+        awful.tag.viewprev(s)
+    end,
+    ["n"] = function()
+        local s = awful.screen.focused()
+        awful.tag.viewnext(s)
+    end,
+    [Key.no_mod("XF86AudioMute")] = function()
+        require("lib.pulseaudio").toggle_mute()
+    end,
+    [Key.no_mod("XF86AudioRaiseVolume")] = function()
+        require("lib.pulseaudio").volume_up()
+    end,
+    [Key.no_mod("XF86AudioLowerVolume")] = function()
+        require("lib.pulseaudio").volume_down()
+    end,
+
+    ["r"] = Key.create_keygrabber({
+        ["h"] = function()
+            resize_client_by_orientation(ResizeOrientation.Horizontal, ResizeMode.Decrease)
+        end,
+        ["l"] = function()
+            resize_client_by_orientation(ResizeOrientation.Horizontal, ResizeMode.Increase)
+        end,
+        ["j"] = function()
+            resize_client_by_orientation(ResizeOrientation.Vertical, ResizeMode.Increase)
+        end,
+        ["k"] = function()
+            resize_client_by_orientation(ResizeOrientation.Vertical, ResizeMode.Decrease)
+        end,
+        ["r"] = function()
+            awful.placement.centered()
+        end,
+        [Key.shiffted("H")] = function()
+            resize_client_by_orientation(ResizeOrientation.Horizontal, ResizeMode.Decrease, true)
+        end,
+        [Key.shiffted("L")] = function()
+            resize_client_by_orientation(ResizeOrientation.Horizontal, ResizeMode.Increase, true)
+        end,
+        [Key.shiffted("J")] = function()
+            resize_client_by_orientation(ResizeOrientation.Vertical, ResizeMode.Increase, true)
+        end,
+        [Key.shiffted("K")] = function()
+            resize_client_by_orientation(ResizeOrientation.Vertical, ResizeMode.Decrease, true)
+        end,
+    }),
+
+    ["1"] = function()
+        local screen = awful.screen.focused()
+        local tag = screen.tags[1]
+        if tag then
+            tag:view_only()
+        end
+    end,
+    ["2"] = function()
+        local screen = awful.screen.focused()
+        local tag = screen.tags[2]
+        if tag then
+            tag:view_only()
+        end
+    end,
+    ["3"] = function()
+        local screen = awful.screen.focused()
+        local tag = screen.tags[3]
+        if tag then
+            tag:view_only()
+        end
+    end,
+    ["4"] = function()
+        local screen = awful.screen.focused()
+        local tag = screen.tags[4]
+        if tag then
+            tag:view_only()
+        end
+    end,
+    ["5"] = function()
+        local screen = awful.screen.focused()
+        local tag = screen.tags[5]
+        if tag then
+            tag:view_only()
+        end
+    end,
+    ["6"] = function()
+        local screen = awful.screen.focused()
+        local tag = screen.tags[6]
+        if tag then
+            tag:view_only()
+        end
+    end,
+    ["7"] = function()
+        local screen = awful.screen.focused()
+        local tag = screen.tags[7]
+        if tag then
+            tag:view_only()
+        end
+    end,
+    ["8"] = function()
+        local screen = awful.screen.focused()
+        local tag = screen.tags[8]
+        if tag then
+            tag:view_only()
+        end
+    end,
+    ["9"] = function()
+        local screen = awful.screen.focused()
+        local tag = screen.tags[9]
+        if tag then
+            tag:view_only()
+        end
+    end,
+})
+
+local client_keys = Key.create({
+    ["g"] = function(c)
+        c.fullscreen = not c.fullscreen
+        c:raise()
+    end,
+    ["f"] = function(c)
+        if c.fullscreen then
+            c.fullscreen = false
+        end
+        c.maximized = not c.maximized
+        c:raise()
+    end,
+    ["z"] = function(c)
+        c.floating = not c.floating
+    end,
+    ["q"] = function(c)
+        c:kill()
+    end,
+    ["m"] = Key.create_keygrabber({
+        ["h"] = function()
+            move_client_direction(Direction.Left)
+        end,
+        ["l"] = function()
+            move_client_direction(Direction.Right)
+        end,
+        ["j"] = function()
+            move_client_direction(Direction.Down)
+        end,
+        ["k"] = function()
+            move_client_direction(Direction.Up)
+        end,
+        [Key.shiffted("H")] = function()
+            move_client_direction(Direction.Left, true)
+        end,
+        [Key.shiffted("L")] = function()
+            move_client_direction(Direction.Right, true)
+        end,
+        [Key.shiffted("K")] = function()
+            move_client_direction(Direction.Up, true)
+        end,
+        [Key.shiffted("J")] = function()
+            move_client_direction(Direction.Down, true)
+        end,
+        ["n"] = function()
+            local c = client.focus
+            local s = awful.screen.focused()
+            if c and s then
+                awful.tag.viewnext(awful.screen.focused())
+                c:move_to_tag(s.selected_tag)
+            end
+        end,
+        ["p"] = function()
+            local c = client.focus
+            local s = awful.screen.focused()
+            if c and s then
+                awful.tag.viewprev(awful.screen.focused())
+                c:move_to_tag(s.selected_tag)
+            end
+        end,
+        ["m"] = function()
+            awful.placement.centered(client.focus)
+        end,
+        ["1"] = move_client_to_tag("1"),
+        ["2"] = move_client_to_tag("2"),
+        ["3"] = move_client_to_tag("3"),
+        ["4"] = move_client_to_tag("4"),
+        ["5"] = move_client_to_tag("5"),
+        ["6"] = move_client_to_tag("6"),
+        ["7"] = move_client_to_tag("7"),
+        ["9"] = move_client_to_tag("8"),
+        ["8"] = move_client_to_tag("9"),
+    }),
+})
+
+local client_buttons = Key.mouse_buttons({
+    [Key.no_mod(Key.mouse_button.Left)] = function(c)
+        c:emit_signal("request::activate", "mouse_click", { raise = true })
+    end,
+    [Key.mouse_button.Left] = function(c)
+        c:emit_signal("request::activate", "mouse_click", { raise = true })
+        awful.mouse.client.move(c)
+    end,
+    [Key.mouse_button.Right] = function(c)
+        c:emit_signal("request::activate", "mouse_click", { raise = true })
+        awful.mouse.client.resize(c)
+    end,
+})
+
 function M.get_global_keys()
-    local globalkeys = gears.table.join(
-        -- launcher
-        awful.key({ modKey }, "d", function()
-            awful.spawn(default.launcher)
-        end, { description = "open launcher", group = "apps" }),
-
-        -- apps
-        awful.key({ modKey }, "b", function()
-            awful.spawn(default.webbrowser)
-        end, { description = "open default webbrowser", group = "apps" }),
-        awful.key({ modKey }, "e", function()
-            awful.spawn(default.filemanager)
-        end, { description = "open file manager", group = "apps" }),
-        -- standard program
-        awful.key({ modKey }, "Return", function()
-            awful.spawn(default.terminal)
-        end, { description = "open primary terminal (tmux)", group = "apps" }),
-        awful.key({ modKey }, ";", function()
-            awful.spawn(default.secondary_terminal)
-        end, { description = "open secondary terminal", group = "apps" }),
-
-        -- layouts
-        awful.key({ modKey }, "u", function()
-            awful.layout.inc(-1, screen.screen)
-        end, { description = "next layout", group = "layout" }),
-        awful.key({ modKey }, "i", function()
-            awful.layout.inc(1, screen.screen)
-        end, { description = "previous layout", group = "layout" }),
-
-        -- client (focus by direction)
-        awful.key({ modKey }, "h", function()
-            focus_client_direction("left")
-        end, { description = "focus left window", group = "client" }),
-        awful.key({ modKey }, "l", function()
-            focus_client_direction("right")
-        end, { description = "focus right window", group = "client" }),
-        awful.key({ modKey }, "j", function()
-            focus_client_direction("down")
-        end, { description = "focus down window", group = "client" }),
-        awful.key({ modKey }, "k", function()
-            focus_client_direction("up")
-        end, { description = "focus up window", group = "client" }),
-
-        -- awesome
-        awful.key(
-            { modKey, Modifiers.Shift },
-            "r",
-            awesome.restart,
-            { description = "reload awesome", group = "awesome" }
-        ),
-        awful.key({ modKey, Modifiers.Shift }, "q", awesome.quit, { description = "quit awesome", group = "awesome" }),
-
-        -- client (resize)
-        awful.key(
-            { modKey },
-            "r",
-            awful.keygrabber({
-                keybindings = {
-                    {
-                        { modKey },
-                        "h",
-                        function()
-                            resize_client_by_orientation(ResizeOrientation.Horizontal, ResizeMode.Decrease)
-                        end,
-                    },
-                    {
-                        { modKey, Modifiers.Shift },
-                        "H",
-                        function()
-                            resize_client_by_orientation(ResizeOrientation.Horizontal, ResizeMode.Decrease, true)
-                        end,
-                    },
-                    {
-                        { modKey },
-                        "l",
-                        function()
-                            resize_client_by_orientation(ResizeOrientation.Horizontal, ResizeMode.Increase)
-                        end,
-                    },
-                    {
-                        { modKey, Modifiers.Shift },
-                        "L",
-                        function()
-                            resize_client_by_orientation(ResizeOrientation.Horizontal, ResizeMode.Increase, true)
-                        end,
-                    },
-                    {
-                        { modKey },
-                        "j",
-                        function()
-                            resize_client_by_orientation(ResizeOrientation.Vertical, ResizeMode.Increase)
-                        end,
-                    },
-                    {
-                        { modKey, Modifiers.Shift },
-                        "J",
-                        function()
-                            resize_client_by_orientation(ResizeOrientation.Vertical, ResizeMode.Increase, true)
-                        end,
-                    },
-                    {
-                        { modKey },
-                        "k",
-                        function()
-                            resize_client_by_orientation(ResizeOrientation.Vertical, ResizeMode.Decrease)
-                        end,
-                    },
-                    {
-                        { modKey, Modifiers.Shift },
-                        "K",
-                        function()
-                            resize_client_by_orientation(ResizeOrientation.Vertical, ResizeMode.Decrease, true)
-                        end,
-                    },
-                    {
-                        { modKey },
-                        "r",
-                        function()
-                            awful.placement.centered()
-                        end,
-                    },
-                },
-                stop_key = modKey,
-                stop_event = "release",
-            }),
-            { description = "resize", group = "client" }
-        ),
-
-        -- tags (switch)
-        awful.key({ modKey }, "p", function()
-            local s = awful.screen.focused()
-            awful.tag.viewprev(s)
-        end, { description = "go to prev tag", group = "tags" }),
-        awful.key({ modKey }, "n", function()
-            local s = awful.screen.focused()
-            awful.tag.viewnext(s)
-        end, { description = "go to next tag", group = "tags" }),
-
-        -- volume control
-        awful.key({}, "XF86AudioMute", function()
-            require("lib.pulseaudio").toggle_mute()
-        end),
-        awful.key({}, "XF86AudioRaiseVolume", function()
-            require("lib.pulseaudio").volume_up()
-        end),
-        awful.key({}, "XF86AudioLowerVolume", function()
-            require("lib.pulseaudio").volume_down()
-        end)
-    )
-
-    -- tags (focus by index)
-    for i = 1, #config.tags do
-        globalkeys = gears.table.join(
-            globalkeys,
-            -- View tag only.
-            awful.key({ modKey }, "#" .. i + 9, function()
-                local screen = awful.screen.focused()
-                local tag = screen.tags[i]
-                if tag then
-                    tag:view_only()
-                end
-            end, { description = "switch to tag #" .. i, group = "tags" })
-        )
-    end
-
-    return globalkeys
+    return global_keys
 end
 
 function M.get_client_keys()
-    local keys_move_to_tag = keys_move_client_to_tag()
-
-    local keys = gears.table.join(
-        awful.key({ modKey }, "g", function(c)
-            c.fullscreen = not c.fullscreen
-            c:raise()
-        end, { description = "toggle fullscreen", group = "client" }),
-        awful.key({ modKey }, "f", function(c)
-            if c.fullscreen then
-                c.fullscreen = false
-            end
-            c.maximized = not c.maximized
-            c:raise()
-        end, { description = "toggle maximized", group = "client" }),
-        awful.key({ modKey }, "z", function(c)
-            c.floating = not c.floating
-        end, { description = "toggle floating", group = "client" }),
-
-        awful.key({ modKey }, "q", function(c)
-            c:kill()
-        end, { description = "close", group = "client" }),
-
-        -- move client by direction
-        awful.key(
-            { modKey },
-            "m",
-            awful.keygrabber({
-                keybindings = gears.table.join({
-                    {
-                        { modKey },
-                        "h",
-                        function()
-                            move_client_direction(Direction.Left)
-                        end,
-                    },
-                    {
-                        { modKey, Modifiers.Shift },
-                        "H",
-                        function()
-                            move_client_direction(Direction.Left, true)
-                        end,
-                    },
-                    {
-                        { modKey },
-                        "l",
-                        function()
-                            move_client_direction(Direction.Right)
-                        end,
-                    },
-                    {
-                        { modKey, Modifiers.Shift },
-                        "L",
-                        function()
-                            move_client_direction(Direction.Right, true)
-                        end,
-                    },
-                    {
-                        { modKey },
-                        "j",
-                        function()
-                            move_client_direction(Direction.Down)
-                        end,
-                    },
-                    {
-                        { modKey, Modifiers.Shift },
-                        "J",
-                        function()
-                            move_client_direction(Direction.Down, true)
-                        end,
-                    },
-                    {
-                        { modKey },
-                        "k",
-                        function()
-                            move_client_direction(Direction.Up)
-                        end,
-                    },
-                    {
-                        { modKey, Modifiers.Shift },
-                        "K",
-                        function()
-                            move_client_direction(Direction.Up, true)
-                        end,
-                    },
-                    {
-                        { modKey },
-                        "n",
-                        function()
-                            local c = client.focus
-                            local s = awful.screen.focused()
-                            if c and s then
-                                awful.tag.viewnext(awful.screen.focused())
-                                c:move_to_tag(s.selected_tag)
-                            end
-                        end,
-                    },
-                    {
-                        { modKey },
-                        "p",
-                        function()
-                            local c = client.focus
-                            local s = awful.screen.focused()
-                            if c and s then
-                                awful.tag.viewprev(awful.screen.focused())
-                                c:move_to_tag(s.selected_tag)
-                            end
-                        end,
-                    },
-                    {
-                        { modKey },
-                        "m",
-                        function()
-                            awful.placement.centered(client.focus)
-                        end,
-                    },
-                }, keys_move_to_tag),
-                stop_key = modKey,
-                stop_event = "release",
-            }),
-            { description = "move client by direction or tag index", group = "client" }
-        )
-    )
-
-    return keys
+    return client_keys
 end
 
 function M.get_client_buttons()
-    local buttons = gears.table.join(
-        awful.button({}, 1, function(c)
-            c:emit_signal("request::activate", "mouse_click", { raise = true })
-        end),
-        awful.button({ modKey }, 1, function(c)
-            c:emit_signal("request::activate", "mouse_click", { raise = true })
-            awful.mouse.client.move(c)
-        end),
-        awful.button({ modKey }, 3, function(c)
-            c:emit_signal("request::activate", "mouse_click", { raise = true })
-            awful.mouse.client.resize(c)
-        end)
-    )
-
-    return buttons
+    return client_buttons
 end
 
 return M

@@ -20,7 +20,6 @@ function M.new(s)
     local tagslist = tags.new(s)
 
     local launcher = require("misc.bar.launcher").new()
-    -- local keyboardlayout = require("misc.bar.keyboardlayout").new()
     local volume = require("misc.bar.volume").new(s)
     local date = require("misc.bar.date").new(s)
     local layoutbox = require("misc.bar.layoutbox").new(s)
@@ -96,15 +95,17 @@ function M.new(s)
         },
     })
 
-    awesome.connect_signal("wibar::visibility", function(visible, screen)
-        if screen == s then
-            wibar.visible = visible
-        end
-    end)
+    -- awesome.connect_signal("wibar::visibility", function(visible, screen)
+    --     if screen == s then
+    --         wibar.visible = visible
+    --     end
+    -- end)
 
-    awesome.connect_signal("wibar::systray", function()
-        systray.visible = screen.primary == s
-    end)
+    -- awesome.connect_signal("wibar::systray", function()
+    --     systray.visible = screen.primary == s
+    -- end)
+    --
+    s.wibar = wibar
 
     return wibar
 end

@@ -6,9 +6,9 @@ local gears = require("gears")
 local dpi = xresources.apply_dpi
 
 local helper = require("helpers.ui")
-local keys = require("core.keys")
 local ui = require("helpers.ui")
 local config = require("config")
+local Key = require("lib.key")
 
 local function update_tag(item, tag, index)
     if tag.selected then
@@ -25,28 +25,28 @@ local M = {}
 function M.new(s)
     awful.tag(config.tags, s, awful.layout.layouts[1])
 
-    local taglist_buttons = gears.table.join(
-        awful.button({}, 1, function(t)
+    local taglist_buttons = require("lib.key").mouse_buttons({
+        [Key.no_mod(Key.mouse_button.Left)] = function(t)
             t:view_only()
-        end),
-        awful.button({ keys.modKey }, 1, function(t)
+        end,
+        [Key.mouse_button.Left] = function(t)
             if client.focus then
                 client.focus:move_to_tag(t)
             end
-        end),
-        awful.button({}, 3, awful.tag.viewtoggle),
-        awful.button({ keys.modKey }, 3, function(t)
+        end,
+        [Key.no_mod(Key.mouse_button.Right)] = awful.tag.viewtoggle,
+        [Key.mouse_button.Right] = function(t)
             if client.focus then
                 client.focus:toggle_tag(t)
             end
-        end),
-        awful.button({}, 4, function(t)
+        end,
+        [Key.no_mod(Key.mouse_button.Up)] = function(t)
             awful.tag.viewnext(t.screen)
-        end),
-        awful.button({}, 5, function(t)
+        end,
+        [Key.no_mod(Key.mouse_button.Down)] = function(t)
             awful.tag.viewprev(t.screen)
-        end)
-    )
+        end,
+    })
 
     local taglist = awful.widget.taglist({
         screen = s,
