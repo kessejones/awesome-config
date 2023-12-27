@@ -5,9 +5,9 @@ local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
 local wibox = require("wibox")
 
-local default = require("default")
+local default = require("config").apps
 local ui = require("helpers.ui")
-local freedesktop = require("freedesktop")
+local freedesktop = require("libs.freedesktop")
 
 local M = {}
 

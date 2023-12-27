@@ -249,8 +249,8 @@ local global_keys = Key.create({
     ["k"] = function()
         focus_client_direction("up")
     end,
-    [Key.shiffted("r")] = awesome.restart,
-    [Key.shiffted("q")] = awesome.quit,
+    [Key.shifted("r")] = awesome.restart,
+    [Key.shifted("q")] = awesome.quit,
 
     ["p"] = function()
         local s = awful.screen.focused()
@@ -286,16 +286,16 @@ local global_keys = Key.create({
         ["r"] = function()
             awful.placement.centered()
         end,
-        [Key.shiffted("H")] = function()
+        [Key.shifted("H")] = function()
             resize_client_by_orientation(ResizeOrientation.Horizontal, ResizeMode.Decrease, true)
         end,
-        [Key.shiffted("L")] = function()
+        [Key.shifted("L")] = function()
             resize_client_by_orientation(ResizeOrientation.Horizontal, ResizeMode.Increase, true)
         end,
-        [Key.shiffted("J")] = function()
+        [Key.shifted("J")] = function()
             resize_client_by_orientation(ResizeOrientation.Vertical, ResizeMode.Increase, true)
         end,
-        [Key.shiffted("K")] = function()
+        [Key.shifted("K")] = function()
             resize_client_by_orientation(ResizeOrientation.Vertical, ResizeMode.Decrease, true)
         end,
     }),
@@ -396,16 +396,16 @@ local client_keys = Key.create({
         ["k"] = function()
             move_client_direction(Direction.Up)
         end,
-        [Key.shiffted("H")] = function()
+        [Key.shifted("H")] = function()
             move_client_direction(Direction.Left, true)
         end,
-        [Key.shiffted("L")] = function()
+        [Key.shifted("L")] = function()
             move_client_direction(Direction.Right, true)
         end,
-        [Key.shiffted("K")] = function()
+        [Key.shifted("K")] = function()
             move_client_direction(Direction.Up, true)
         end,
-        [Key.shiffted("J")] = function()
+        [Key.shifted("J")] = function()
             move_client_direction(Direction.Down, true)
         end,
         ["n"] = function()
