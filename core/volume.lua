@@ -1,8 +1,8 @@
 local awful = require("awful")
 
 local function emit_volume_info()
-    require("lib.pulseaudio").get_volume(function(volume)
-        require("lib.pulseaudio").get_muted(function(muted)
+    require("libs.pulseaudio").get_volume(function(volume)
+        require("libs.pulseaudio").get_muted(function(muted)
             awesome.emit_signal("signal::volume", volume, muted)
         end)
     end)

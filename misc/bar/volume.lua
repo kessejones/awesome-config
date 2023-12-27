@@ -50,19 +50,19 @@ function M.new(s)
             audio_menu.visible = not audio_menu.visible
         end),
         awful.button({}, 2, function()
-            require("lib.pulseaudio").toggle_mute()
+            require("libs.pulseaudio").toggle_mute()
         end),
         awful.button({}, 4, function()
-            require("lib.pulseaudio").volume_up()
+            require("libs.pulseaudio").volume_up()
             widget_tooltip.visible = true
         end),
         awful.button({}, 5, function()
-            require("lib.pulseaudio").volume_down()
+            require("libs.pulseaudio").volume_down()
             widget_tooltip.visible = true
         end)
     ))
 
-    require("lib.pulseaudio").on_volume_change(function(volume, muted)
+    require("libs.pulseaudio").on_volume_change(function(volume, muted)
         if muted then
             icon.image = beautiful.get_asset("catppuccin/assets/volume-off.png")
         else

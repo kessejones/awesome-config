@@ -24,7 +24,7 @@ function M.new()
         widget = wibox.widget.slider,
     })
 
-    require("lib.pulseaudio").get_volume(function(volume)
+    require("libs.pulseaudio").get_volume(function(volume)
         widget.value = volume * 100
     end)
 
@@ -32,7 +32,7 @@ function M.new()
         timeout = 0.3,
         autostart = false,
         callback = function()
-            require("lib.pulseaudio").set_volume(widget.value / 100)
+            require("libs.pulseaudio").set_volume(widget.value / 100)
         end,
     })
 

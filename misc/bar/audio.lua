@@ -19,7 +19,7 @@ function M.new(s)
         audio_menu.visible = not audio_menu.visible
     end))
 
-    require("lib.pulseaudio").on_volume_change(function(volume, muted)
+    require("libs.pulseaudio").on_volume_change(function(volume, muted)
         if muted then
             icon.markup = ""
         else

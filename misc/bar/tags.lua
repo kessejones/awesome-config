@@ -8,7 +8,7 @@ local dpi = xresources.apply_dpi
 local helper = require("helpers.ui")
 local ui = require("helpers.ui")
 local config = require("config")
-local Key = require("lib.key")
+local Key = require("libs.key")
 
 local function update_tag(item, tag, index)
     if tag.selected then
@@ -25,7 +25,7 @@ local M = {}
 function M.new(s)
     awful.tag(config.tags, s, awful.layout.layouts[1])
 
-    local taglist_buttons = require("lib.key").mouse_buttons({
+    local taglist_buttons = require("libs.key").mouse_buttons({
         [Key.no_mod(Key.mouse_button.Left)] = function(t)
             t:view_only()
         end,

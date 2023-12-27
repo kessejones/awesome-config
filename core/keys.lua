@@ -3,7 +3,7 @@ local gears = require("gears")
 local config = require("config")
 local helper = require("helpers.ui")
 
-local Key = require("lib.key")
+local Key = require("libs.key")
 
 local apps = config.apps
 
@@ -261,13 +261,13 @@ local global_keys = Key.create({
         awful.tag.viewnext(s)
     end,
     [Key.no_mod("XF86AudioMute")] = function()
-        require("lib.pulseaudio").toggle_mute()
+        require("libs.pulseaudio").toggle_mute()
     end,
     [Key.no_mod("XF86AudioRaiseVolume")] = function()
-        require("lib.pulseaudio").volume_up()
+        require("libs.pulseaudio").volume_up()
     end,
     [Key.no_mod("XF86AudioLowerVolume")] = function()
-        require("lib.pulseaudio").volume_down()
+        require("libs.pulseaudio").volume_down()
     end,
 
     ["r"] = Key.create_keygrabber({

@@ -29,14 +29,14 @@ function M.new(s)
 
     local output_volume = require("misc.audio.slider").new({
         on_change = function(value)
-            require("lib.pulseaudio").set_volume(value)
+            require("libs.pulseaudio").set_volume(value)
         end,
         icon = "",
     })
 
     local input_volume = require("misc.audio.slider").new({
         on_change = function(value)
-            require("lib.pulseaudio").set_source_volume(value)
+            require("libs.pulseaudio").set_source_volume(value)
         end,
         icon = "",
     })
@@ -50,17 +50,17 @@ function M.new(s)
 
     widget:connect_signal("property::visible", function()
         if widget.visible == true then
-            require("lib.pulseaudio").get_volume(function(volume)
+            require("libs.pulseaudio").get_volume(function(volume)
                 output_volume.value = volume
             end)
 
-            require("lib.pulseaudio").get_source_volume(function(volume)
+            require("libs.pulseaudio").get_source_volume(function(volume)
                 input_volume.value = volume
             end)
         end
     end)
 
-    require("lib.pulseaudio").on_volume_change(function(volume, muted)
+    require("libs.pulseaudio").on_volume_change(function(volume, muted)
         if muted then
             output_volume.icon = ""
         else
