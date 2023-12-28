@@ -34,5 +34,5 @@ end
 local theme = require("theme")
 beautiful.init(theme)
 
-require("autostart")
+-- require("autostart")
 require("core")

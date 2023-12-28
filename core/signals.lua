@@ -4,6 +4,7 @@ local awful = require("awful")
 local wibox = require("wibox")
 local helper = require("helpers")
 local ch = require("helpers.client")
+local Key = require("libs.key")
 
 local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
@@ -34,19 +35,18 @@ local function request_titlebar(c)
         bg_normal = beautiful.xcolormantle,
     })
 
-    -- buttons for the titlebar
-    local buttons = gears.table.join(
-        awful.button({}, 1, function()
+    local buttons = Key.mouse_buttons({
+        [Key.no_mod(Key.mouse_button.Left)] = function()
             client.focus = c
             c:raise()
             awful.mouse.client.move(c)
-        end),
-        awful.button({}, 3, function()
+        end,
+        [Key.no_mod(Key.mouse_button.Right)] = function()
             client.focus = c
             c:raise()
             awful.mouse.client.resize(c)
-        end)
-    )
+        end,
+    })
 
     local maximze_button = awful.titlebar.widget.maximizedbutton(c)
     local ontop_button = awful.titlebar.widget.ontopbutton(c)
@@ -146,12 +146,6 @@ client.connect_signal("focus", function(c)
     c.border_color = beautiful.border_focus
 end)
 
-client.connect_signal("unmanage", function(c)
-    if c.fullscreen then
-        awesome.emit_signal("wibar::visibility", true, c.screen)
-    end
-end)
-
 client.connect_signal("unfocus", function(c)
     c.border_color = beautiful.border_normal
 end)
@@ -162,9 +156,6 @@ end)
 
 client.connect_signal("property::fullscreen", function(c)
     window_rounded(c)
-
-    local wibar_visibility = not c.fullscreen
-    awesome.emit_signal("wibar::visibility", wibar_visibility, c.screen)
 end)
 
 client.connect_signal("property::floating", function(c)
@@ -204,6 +195,12 @@ tag.connect_signal("property::layout", function(t)
                 awful.titlebar.hide(client)
             end
         end
+    end
+
+    if layout.name == "fullscreen" then
+        t.useless_gap = 0
+    else
+        t.useless_gap = beautiful.useless_gap
     end
 end)
 
