@@ -1,7 +1,6 @@
 ---------------------------
 -- Default awesome theme --
 ---------------------------
-local gears = require("gears")
 local theme_assets = require("beautiful.theme_assets")
 local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
@@ -87,8 +86,8 @@ theme.bg_systray = theme.bg_normal
 
 theme.fg_normal = theme.xcolorT2 --Text Color
 theme.fg_focus = theme.xcolor5
-theme.fg_urgent = "#ffffff"
-theme.fg_minimize = "#ffffff"
+theme.fg_urgent = theme.xcolor10
+theme.fg_minimize = theme.xcolor10
 
 theme.useless_gap = 8
 theme.border_width = 3
@@ -103,7 +102,7 @@ theme.menu_border_width = dpi(2)
 -- theme.menu_border_color = theme.xcolorS0
 theme.menu_border_color = theme.border_focus
 --theme.menu_submenu_icon = themes_path.."catppuccin/submenu.png"
-theme.submenu = "»  "
+theme.submenu = " "
 theme.menu_height = dpi(37)
 theme.menu_width = dpi(194)
 
@@ -116,7 +115,7 @@ theme.taglist_spacing = dpi(2)
 theme.taglist_bg_focus = theme.xcolorbase
 theme.taglist_disable_icon = true
 theme.taglist_font = theme.font_name .. " 10"
-theme.taglist_fg_focus = theme.xcolor2 --"#7e9dde"
+theme.taglist_fg_focus = theme.xcolor2
 theme.taglist_fg_empty = theme.xcolorS2
 theme.taglist_fg_occupied = "#526c96"
 
@@ -248,5 +247,3 @@ theme.awesome_icon = theme_assets.awesome_icon(theme.menu_height, theme.xcolorS2
 -- theme.wibar_fg = theme.xcolorT0
 
 return theme
-
--- vim: filetype=lua:expandtab:shiftwidth=4:tabstop=8:softtabstop=4:textwidth=80
