@@ -5,6 +5,7 @@ local wibox = require("wibox")
 local helper = require("helpers")
 local ch = require("helpers.client")
 local Key = require("libs.key")
+local MouseButton = require("libs.key.mouse_button")
 
 local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
@@ -36,12 +37,12 @@ local function request_titlebar(c)
     })
 
     local buttons = Key.mouse_buttons({
-        [Key.no_mod(Key.mouse_button.Left)] = function()
+        [Key.no_mod(MouseButton.Left)] = function()
             client.focus = c
             c:raise()
             awful.mouse.client.move(c)
         end,
-        [Key.no_mod(Key.mouse_button.Right)] = function()
+        [Key.no_mod(MouseButton.Right)] = function()
             client.focus = c
             c:raise()
             awful.mouse.client.resize(c)

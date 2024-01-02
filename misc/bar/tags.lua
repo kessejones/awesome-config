@@ -9,6 +9,7 @@ local helper = require("helpers.ui")
 local ui = require("helpers.ui")
 local config = require("config")
 local Key = require("libs.key")
+local MouseButton = require("libs.key.mouse_button")
 
 local function update_tag(item, tag, index)
     if tag.selected then
@@ -26,24 +27,24 @@ function M.new(s)
     awful.tag(config.tags, s, awful.layout.layouts[1])
 
     local taglist_buttons = require("libs.key").mouse_buttons({
-        [Key.no_mod(Key.mouse_button.Left)] = function(t)
+        [Key.no_mod(MouseButton.Left)] = function(t)
             t:view_only()
         end,
-        [Key.mouse_button.Left] = function(t)
+        [MouseButton.Left] = function(t)
             if client.focus then
                 client.focus:move_to_tag(t)
             end
         end,
-        [Key.no_mod(Key.mouse_button.Right)] = awful.tag.viewtoggle,
-        [Key.mouse_button.Right] = function(t)
+        [Key.no_mod(MouseButton.Right)] = awful.tag.viewtoggle,
+        [MouseButton.Right] = function(t)
             if client.focus then
                 client.focus:toggle_tag(t)
             end
         end,
-        [Key.no_mod(Key.mouse_button.Up)] = function(t)
+        [Key.no_mod(MouseButton.Up)] = function(t)
             awful.tag.viewnext(t.screen)
         end,
-        [Key.no_mod(Key.mouse_button.Down)] = function(t)
+        [Key.no_mod(MouseButton.Down)] = function(t)
             awful.tag.viewprev(t.screen)
         end,
     })

@@ -5,6 +5,9 @@ local gears = require("gears")
 local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
 
+local Key = require("libs.key")
+local MouseButton = require("libs.key.mouse_button")
+
 local tags = require("misc.bar.tags")
 
 local M = {}
@@ -27,20 +30,20 @@ function M.new(s)
     local systray = require("misc.bar.systray").new()
     systray.visible = screen.primary == s
 
-    layoutbox:buttons(gears.table.join(
-        awful.button({}, 1, function()
+    layoutbox:buttons(Key.mouse_buttons({
+        [Key.no_mod(MouseButton.Left)] = function()
             awful.layout.inc(1)
-        end),
-        awful.button({}, 3, function()
+        end,
+        [Key.no_mod(MouseButton.Right)] = function()
             awful.layout.inc(-1)
-        end),
-        awful.button({}, 4, function()
+        end,
+        [Key.no_mod(MouseButton.Up)] = function()
             awful.layout.inc(1)
-        end),
-        awful.button({}, 5, function()
+        end,
+        [Key.no_mod(MouseButton.Down)] = function()
             awful.layout.inc(-1)
-        end)
-    ))
+        end,
+    }))
 
     local separator = wibox.widget({
         widget = wibox.container.margin,

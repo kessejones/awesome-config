@@ -1,32 +1,19 @@
 local gears = require("gears")
 local awful = require("awful")
-
-local Modifiers = {
-    Alt = "Mod1",
-    Super = "Mod4",
-    Shift = "Shift",
-    Ctrl = "Control",
-}
-
-local MouseButton = {
-    Left = 1,
-    Right = 3,
-    Middle = 2,
-    Up = 4,
-    Down = 5,
-}
+local Modifier = require("libs.key.modifier")
+local MouseButton = require("libs.key.mouse_button")
+local mod_key = require("config").mod_key
 
 local M = {}
 
-M.mod_key = Modifiers.Alt
-M.modifiers = Modifiers
-M.mouse_button = MouseButton
+M.Modifier = Modifier
+M.MouseButton = MouseButton
 
 local function mods_key(key)
     if type(key) == "table" then
         return key[1], key[2]
     else
-        return { M.mod_key }, key
+        return { mod_key }, key
     end
 end
 
@@ -56,7 +43,7 @@ end
 function M.create_keygrabber(keys_list)
     return awful.keygrabber({
         keybindings = build_keybindinds(keys_list),
-        stop_key = M.mod_key,
+        stop_key = mod_key,
         stop_event = "release",
     })
 end
@@ -66,7 +53,7 @@ function M.no_mod(key)
 end
 
 function M.shifted(key)
-    return { { M.mod_key, Modifiers.Shift }, key }
+    return { { mod_key, Modifier.Shift }, key }
 end
 
 function M.mouse_buttons(buttons_list)

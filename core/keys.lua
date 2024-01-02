@@ -4,6 +4,7 @@ local config = require("config")
 local helper = require("helpers.ui")
 
 local Key = require("libs.key")
+local MouseButton = require("libs.key.mouse_button")
 
 local apps = config.apps
 
@@ -440,14 +441,14 @@ local client_keys = Key.create({
 })
 
 local client_buttons = Key.mouse_buttons({
-    [Key.no_mod(Key.mouse_button.Left)] = function(c)
+    [Key.no_mod(MouseButton.Left)] = function(c)
         c:emit_signal("request::activate", "mouse_click", { raise = true })
     end,
-    [Key.mouse_button.Left] = function(c)
+    [MouseButton.Left] = function(c)
         c:emit_signal("request::activate", "mouse_click", { raise = true })
         awful.mouse.client.move(c)
     end,
-    [Key.mouse_button.Right] = function(c)
+    [MouseButton.Right] = function(c)
         c:emit_signal("request::activate", "mouse_click", { raise = true })
         awful.mouse.client.resize(c)
     end,

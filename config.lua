@@ -1,4 +1,5 @@
 local awful = require("awful")
+local Modifier = require("libs.key.modifier")
 
 local config = {}
 
@@ -22,5 +23,7 @@ config.layouts = {
     awful.layout.suit.floating,
     awful.layout.suit.max.fullscreen,
 }
+
+config.mod_key = Modifier.Alt
 
 return config
