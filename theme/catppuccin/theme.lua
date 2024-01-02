@@ -227,6 +227,7 @@ theme.wallpaper = themes_path .. "catppuccin/buttons.png"
 -- You can use your own layout icons like this:
 theme.layout_floating = themes_path .. "catppuccin/layouts/floating.png"
 theme.layout_max = themes_path .. "catppuccin/layouts/max.png"
+theme.layout_fullscreen = themes_path .. "catppuccin/layouts/max.png"
 theme.layout_tile = themes_path .. "catppuccin/layouts/tile.png"
 theme.layout_tiletop = themes_path .. "catppuccin/layouts/tile-top.png"
 theme.layout_tilebottom = themes_path .. "catppuccin/layouts/tile-bottom.png"
