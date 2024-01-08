@@ -7,5 +7,6 @@
     "screen",
     "tag",
     "mouse"
-  ]
+  ],
+  "workspace.library": ["~/.local/lib/awesome"]
 }
