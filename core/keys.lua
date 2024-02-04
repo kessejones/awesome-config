@@ -435,8 +435,8 @@ local client_keys = Key.create({
         ["5"] = move_client_to_tag("5"),
         ["6"] = move_client_to_tag("6"),
         ["7"] = move_client_to_tag("7"),
-        ["9"] = move_client_to_tag("8"),
-        ["8"] = move_client_to_tag("9"),
+        ["8"] = move_client_to_tag("8"),
+        ["9"] = move_client_to_tag("9"),
     }),
 })
 
