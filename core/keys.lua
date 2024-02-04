@@ -264,12 +264,12 @@ local global_keys = Key.create({
     [Key.no_mod("XF86AudioMute")] = function()
         require("libs.pulseaudio").toggle_mute()
     end,
-    [Key.no_mod("XF86AudioRaiseVolume")] = function()
-        require("libs.pulseaudio").volume_up()
-    end,
-    [Key.no_mod("XF86AudioLowerVolume")] = function()
-        require("libs.pulseaudio").volume_down()
-    end,
+    -- [Key.no_mod("XF86AudioRaiseVolume")] = function()
+    --     require("libs.pulseaudio").volume_up()
+    -- end,
+    -- [Key.no_mod("XF86AudioLowerVolume")] = function()
+    --     require("libs.pulseaudio").volume_down()
+    -- end,
 
     ["r"] = Key.create_keygrabber({
         ["h"] = function()
