@@ -130,7 +130,8 @@ client.connect_signal("manage", function(c)
     local t = awful.screen.focused().selected_tag
     local layout = t.layout
 
-    if layout.name == "floating" then
+    -- NOTE: show titlebar if layout floating or client is floating
+    if layout.name == "floating" or (c.floating and not c.requests_no_titlebar) then
         request_titlebar(c)
     end
 end)
