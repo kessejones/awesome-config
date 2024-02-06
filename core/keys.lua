@@ -37,6 +37,16 @@ local function move_client_to_tag(tag_name)
     end
 end
 
+local function focus_tag(tag_index)
+    return function()
+        local screen = awful.screen.focused()
+        local tag = screen.tags[tag_index]
+        if tag then
+            tag:view_only()
+        end
+    end
+end
+
 local function focus_client_direction(dir)
     if dir == Direction.Down or dir == Direction.Up then
         awful.client.focus.bydirection(dir)
@@ -300,70 +310,15 @@ local global_keys = Key.create({
             resize_client_by_orientation(ResizeOrientation.Vertical, ResizeMode.Decrease, true)
         end,
     }),
-
-    ["1"] = function()
-        local screen = awful.screen.focused()
-        local tag = screen.tags[1]
-        if tag then
-            tag:view_only()
-        end
-    end,
-    ["2"] = function()
-        local screen = awful.screen.focused()
-        local tag = screen.tags[2]
-        if tag then
-            tag:view_only()
-        end
-    end,
-    ["3"] = function()
-        local screen = awful.screen.focused()
-        local tag = screen.tags[3]
-        if tag then
-            tag:view_only()
-        end
-    end,
-    ["4"] = function()
-        local screen = awful.screen.focused()
-        local tag = screen.tags[4]
-        if tag then
-            tag:view_only()
-        end
-    end,
-    ["5"] = function()
-        local screen = awful.screen.focused()
-        local tag = screen.tags[5]
-        if tag then
-            tag:view_only()
-        end
-    end,
-    ["6"] = function()
-        local screen = awful.screen.focused()
-        local tag = screen.tags[6]
-        if tag then
-            tag:view_only()
-        end
-    end,
-    ["7"] = function()
-        local screen = awful.screen.focused()
-        local tag = screen.tags[7]
-        if tag then
-            tag:view_only()
-        end
-    end,
-    ["8"] = function()
-        local screen = awful.screen.focused()
-        local tag = screen.tags[8]
-        if tag then
-            tag:view_only()
-        end
-    end,
-    ["9"] = function()
-        local screen = awful.screen.focused()
-        local tag = screen.tags[9]
-        if tag then
-            tag:view_only()
-        end
-    end,
+    ["1"] = focus_tag(1),
+    ["2"] = focus_tag(2),
+    ["3"] = focus_tag(3),
+    ["4"] = focus_tag(4),
+    ["5"] = focus_tag(5),
+    ["6"] = focus_tag(6),
+    ["7"] = focus_tag(7),
+    ["8"] = focus_tag(8),
+    ["9"] = focus_tag(9),
 })
 
 local client_keys = Key.create({
