@@ -236,6 +236,9 @@ local global_keys = Key.create({
     ["e"] = function()
         awful.spawn(apps.filemanager)
     end,
+    ["s"] = function()
+        awful.spawn(apps.screenshot)
+    end,
     ["Return"] = function()
         awful.spawn(apps.terminal)
     end,
