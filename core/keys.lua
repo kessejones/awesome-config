@@ -319,6 +319,17 @@ local global_keys = Key.create({
     ["7"] = focus_tag(7),
     ["8"] = focus_tag(8),
     ["9"] = focus_tag(9),
+    ["v"] = function()
+        local tag = awful.screen.focused().selected_tag
+        local layout = awful.tag.getproperty(tag, "layout")
+        if layout.name == "fullscreen" then
+            local original_layout = tag.original_layout
+            awful.layout.set(original_layout)
+        else
+            tag.original_layout = layout
+            awful.layout.set(awful.layout.suit.max.fullscreen)
+        end
+    end,
 })
 
 local client_keys = Key.create({

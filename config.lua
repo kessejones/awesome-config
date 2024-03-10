@@ -21,7 +21,6 @@ config.layouts = {
     awful.layout.suit.tile.top,
     awful.layout.suit.tile.bottom,
     awful.layout.suit.floating,
-    awful.layout.suit.max.fullscreen,
 }
 
 config.mod_key = Modifier.Alt
