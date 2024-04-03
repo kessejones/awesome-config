@@ -8,15 +8,70 @@ local MouseButton = require("libs.key.mouse_button")
 
 local apps = config.apps
 
-local ResizeOrientation = {
-    Horizontal = 0,
-    Vertical = 1,
-}
+local client_resize_relative = setmetatable({
+    left = function(val, inc)
+        if inc then
+            return { x = -val, y = 0, w = val, h = 0 }
+        else
+            return { x = val, y = 0, w = -val, h = 0 }
+        end
+    end,
+    right = function(val, inc)
+        if inc then
+            return { x = 0, y = 0, w = val, h = 0 }
+        else
+            return { x = 0, y = 0, w = -val, h = 0 }
+        end
+    end,
+    up = function(val, inc)
+        if inc then
+            return { x = 0, y = -val, w = 0, h = val }
+        else
+            return { x = 0, y = val, w = 0, h = -val }
+        end
+    end,
+    down = function(val, inc)
+        if inc then
+            return { x = 0, y = 0, w = 0, h = val }
+        else
+            return { x = 0, y = 0, w = 0, h = -val }
+        end
+    end,
+    resize = function(rect)
+        client.focus:relative_move(rect.x, rect.y, rect.w, rect.h)
+    end,
+}, {
+    __call = function(tbl, dir, inc)
+        local rect = tbl[dir](20, inc)
+        tbl.resize(rect)
+    end,
+    __index = function()
+        assert(false, "Invalid direction")
+    end,
+})
 
-local ResizeMode = {
-    Decrease = -1,
-    Increase = 1,
-}
+local client_relative_move = setmetatable({
+    left = function(val)
+        client.focus:relative_move(-val, 0, 0, 0)
+    end,
+    right = function(val)
+        client.focus:relative_move(val, 0, 0, 0)
+    end,
+    up = function(val)
+        client.focus:relative_move(0, -val, 0, 0)
+    end,
+    down = function(val)
+        client.focus:relative_move(0, val, 0, 0)
+    end,
+}, {
+    __call = function(tbl, dir, wide)
+        local val = wide and 40 or 20
+        tbl[dir](val)
+    end,
+    __index = function()
+        assert(false, "Invalid direction")
+    end,
+})
 
 local Direction = {
     Left = "left",
@@ -33,6 +88,10 @@ local function move_client_to_tag(tag_name)
             local t = awful.tag.find_by_name(awful.screen.focused(), tag_name)
             client.focus:move_to_tag(t)
             t:view_only(t)
+
+            gears.timer.delayed_call(function()
+                helper.move_cursor_to_window(client.focus, true)
+            end)
         end
     end
 end
@@ -48,97 +107,45 @@ local function focus_tag(tag_index)
 end
 
 local function focus_client_direction(dir)
-    if dir == Direction.Down or dir == Direction.Up then
-        awful.client.focus.bydirection(dir)
-        helper.move_cursor_to_window(client.focus)
-        return
-    end
-
-    local client_focused = client.focus
-    if client_focused and client_focused.maximized then
-        awful.screen.focus_bydirection(dir)
-    else
-        awful.client.focus.bydirection(dir)
-        if screen.count() > 1 and client_focused == client.focus then
-            awful.screen.focus_bydirection(dir)
-            gears.timer.delayed_call(function()
-                if #awful.screen.focused().clients == 0 then
-                    client.focus = nil
-                else
-                    helper.move_cursor_to_window(client.focus, true)
-                end
-            end)
-        else
-            helper.move_cursor_to_window(client.focus)
+    local c = client.focus
+    local s = awful.screen.focused()
+    awful.client.focus.global_bydirection(dir)
+    gears.timer.delayed_call(function()
+        if c == client.focus and s == awful.screen.focused() then
+            return
         end
-    end
+        if #awful.screen.focused().clients == 0 then
+            client.focus = nil
+        else
+            helper.move_cursor_to_window(client.focus, true)
+        end
+    end)
 end
 
 local function move_client_direction(dir, wide)
-    wide = wide or false
-
     local client_focused = client.focus
     local screen = client_focused.screen
     local tag = screen.selected_tag
     local layout = tag.layout
 
+    -- NOTE: move window by relative position
     if client_focused.floating or layout.name == "floating" then
-        local vertical_value = 90
-        local horizontal_value = 80
-
-        local value = 30
-        if wide then
-            if dir == Direction.Down or dir == Direction.Up then
-                value = vertical_value
-            else
-                value = horizontal_value
-            end
-        end
-
-        if dir == Direction.Down then
-            local screen_in_direction = client_focused.screen:get_next_in_direction(dir)
-            local limit = screen.geometry.y + screen.geometry.height - client_focused.height
-            if not screen_in_direction and client_focused.y + value > limit then
-                return
-            end
-            client_focused.y = client_focused.y + value
-        elseif dir == Direction.Up then
-            local point_y = 0
-            local screen_in_direction = client_focused.screen:get_next_in_direction(dir)
-
-            if not screen_in_direction and client_focused.y - value < point_y then
-                return
-            end
-            client_focused.y = client_focused.y - value
-        elseif dir == Direction.Left then
-            local point_x = 0
-            local screen_in_direction = client_focused.screen:get_next_in_direction(dir)
-            if not screen_in_direction and client_focused.x - value < point_x then
-                return
-            end
-            client_focused.x = client_focused.x - value
-        elseif dir == Direction.Right then
-            local screen_in_direction = client_focused.screen:get_next_in_direction(dir)
-            local limit = screen.geometry.x + screen.geometry.width
-            if not screen_in_direction and client_focused.x + client_focused.width + value > limit then
-                return
-            end
-            client_focused.x = client_focused.x + value
-        end
+        client_relative_move(dir, wide)
         return
     end
 
-    if dir == Direction.Down or dir == Direction.Up then
-        awful.client.swap.bydirection(dir)
+    -- NOTE: move window by direction globally
+    if wide then
+        awful.client.swap.global_bydirection(dir)
         gears.timer.delayed_call(function()
-            helper.move_cursor_to_window(client.focus)
+            helper.move_cursor_to_window(client_focused, true)
         end)
         return
     end
 
+    -- NOTE: move window by direction or move to screen in direction
     local x, y = client_focused.x, client_focused.y
     awful.client.swap.bydirection(dir)
-
     gears.timer.delayed_call(function()
         if x == client_focused.x and y == client_focused.y then
             local screen_in_direction = client_focused.screen:get_next_in_direction(dir)
@@ -151,79 +158,6 @@ local function move_client_direction(dir, wide)
             helper.move_cursor_to_window(client_focused, true)
         end)
     end)
-end
-
-local function resize_client_by_orientation(orientation, mode, wide)
-    wide = wide or false
-    local focused = client.focus
-    local screen_focused = awful.screen.focused()
-    local current_tag = screen_focused.selected_tag
-
-    local function layout_can_resize()
-        return current_tag.layout ~= awful.layout.layouts[1]
-    end
-
-    local tile_step = 0.05
-    local wide_vertical_value = 90
-    local wide_horizontal_value = 80
-
-    local grow_value = 30
-    if wide then
-        if orientation == ResizeOrientation.Vertical then
-            grow_value = wide_vertical_value
-        else
-            grow_value = wide_horizontal_value
-        end
-    end
-
-    if mode == ResizeMode.Decrease then
-        grow_value = -grow_value
-    end
-
-    local function client_can_resize_width()
-        local screen = focused.screen
-        local limit = screen.geometry.x + screen.geometry.width
-
-        local w = focused.width + grow_value
-        if focused.x + w > limit then
-            return false
-        end
-
-        return w >= (focused.size_hints.min_width or 0)
-    end
-
-    local function client_can_resize_height()
-        local screen = focused.screen
-        local limit = screen.geometry.y + screen.geometry.height
-        local h = focused.height + grow_value
-        if focused.y + h > limit then
-            return false
-        end
-
-        return h >= (focused.size_hints.min_height or 0)
-    end
-
-    if orientation == ResizeOrientation.Horizontal then
-        if focused.floating then
-            if client_can_resize_width() then
-                focused.width = focused.width + grow_value
-            end
-        else
-            if layout_can_resize() then
-                awful.tag.incmwfact(tile_step * mode)
-            end
-        end
-    elseif orientation == ResizeOrientation.Vertical then
-        if focused.floating then
-            if client_can_resize_height() then
-                focused.height = focused.height + grow_value
-            end
-        else
-            if layout_can_resize() then
-                awful.client.incwfact(tile_step * mode)
-            end
-        end
-    end
 end
 
 local global_keys = Key.create({
@@ -286,31 +220,31 @@ local global_keys = Key.create({
 
     ["r"] = Key.create_keygrabber({
         ["h"] = function()
-            resize_client_by_orientation(ResizeOrientation.Horizontal, ResizeMode.Decrease)
+            client_resize_relative("left", true)
         end,
         ["l"] = function()
-            resize_client_by_orientation(ResizeOrientation.Horizontal, ResizeMode.Increase)
+            client_resize_relative("right", true)
         end,
         ["j"] = function()
-            resize_client_by_orientation(ResizeOrientation.Vertical, ResizeMode.Increase)
+            client_resize_relative("down", true)
         end,
         ["k"] = function()
-            resize_client_by_orientation(ResizeOrientation.Vertical, ResizeMode.Decrease)
+            client_resize_relative("up", true)
         end,
         ["r"] = function()
             awful.placement.centered()
         end,
         [Key.shifted("H")] = function()
-            resize_client_by_orientation(ResizeOrientation.Horizontal, ResizeMode.Decrease, true)
+            client_resize_relative("left", false)
         end,
         [Key.shifted("L")] = function()
-            resize_client_by_orientation(ResizeOrientation.Horizontal, ResizeMode.Increase, true)
+            client_resize_relative("right", false)
         end,
         [Key.shifted("J")] = function()
-            resize_client_by_orientation(ResizeOrientation.Vertical, ResizeMode.Increase, true)
+            client_resize_relative("down", false)
         end,
         [Key.shifted("K")] = function()
-            resize_client_by_orientation(ResizeOrientation.Vertical, ResizeMode.Decrease, true)
+            client_resize_relative("up", false)
         end,
     }),
     ["1"] = focus_tag(1),
@@ -337,6 +271,9 @@ local global_keys = Key.create({
 
 local client_keys = Key.create({
     ["g"] = function(c)
+        if c.maximized then
+            c.maximized = false
+        end
         c.fullscreen = not c.fullscreen
         c:raise()
     end,
@@ -382,16 +319,22 @@ local client_keys = Key.create({
             local c = client.focus
             local s = awful.screen.focused()
             if c and s then
-                awful.tag.viewnext(awful.screen.focused())
+                awful.tag.viewnext(s)
                 c:move_to_tag(s.selected_tag)
+                gears.timer.delayed_call(function()
+                    helper.move_cursor_to_window(c, true)
+                end)
             end
         end,
         ["p"] = function()
             local c = client.focus
             local s = awful.screen.focused()
             if c and s then
-                awful.tag.viewprev(awful.screen.focused())
+                awful.tag.viewprev(s)
                 c:move_to_tag(s.selected_tag)
+                gears.timer.delayed_call(function()
+                    helper.move_cursor_to_window(c, true)
+                end)
             end
         end,
         ["m"] = function()
