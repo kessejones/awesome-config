@@ -7,8 +7,8 @@ config.tags = { "1", "2", "3", "4", "5", "6", "7", "8", "9" }
 
 config.apps = {
     launcher = "rofi -show-icons -show drun",
-    terminal = "kitty",
-    secondary_terminal = "kitty -e " .. os.getenv("SHELL"),
+    terminal = "wezterm",
+    secondary_terminal = "wezterm",
     webbrowser = "firefox",
     secondary_webbrowser = "brave-browser",
     discord = "discord",
