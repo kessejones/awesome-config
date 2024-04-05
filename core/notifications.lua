@@ -2,11 +2,19 @@ local naughty = require("naughty")
 local beautiful = require("beautiful")
 local menubar = require("menubar")
 
-naughty.config.defaults["border_width"] = beautiful.notification_border_width
+naughty.config.defaults.border_width = beautiful.notification_border_width
+naughty.config.presets.critical.timeout = 0
+naughty.config.presets.critical.bg = beautiful.xcolormantle
 
-naughty.config.defaults.timeout = 5
-naughty.config.presets.low.timeout = 2
-naughty.config.presets.critical.timeout = 12
+naughty.config.presets.low.border_color = beautiful.xcolor2
+naughty.config.presets.normal.border_color = beautiful.xcolor1
+naughty.config.presets.critical.border_color = beautiful.xcolor10
+
+naughty.config.notify_callback = function(args)
+    args.border_color = naughty.config.presets[args.urgency or "normal"].border_color or beautiful.xcolor6
+
+    return args
+end
 
 naughty.connect_signal("request::icon", function(n, context, hints)
     if context ~= "app_icon" then

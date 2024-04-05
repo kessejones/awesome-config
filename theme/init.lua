@@ -47,7 +47,15 @@ theme.tooltip_shape = function(cr, w, h)
 end
 
 theme.notification_border_width = theme.border_width
-theme.notification_border_color = theme.border_focus
+theme.notification_max_width = 400
+theme.notification_max_height = 400
+theme.notification_width = 400
+theme.notification_height = 50
+theme.notification_font = "Ubuntu Nerd Font 12"
+theme.notification_shape = function(cr, w, h)
+    require("gears").shape.rounded_rect(cr, w, h, theme.border_radius)
+end
+
 theme.titlebar_height = dpi(8)
 theme.titlebar_fg_focus = theme.xcolor1
 theme.menu_font = theme.font_text_with_size(10, "Bold")
