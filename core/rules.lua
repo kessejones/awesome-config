@@ -1,7 +1,7 @@
 local awful = require("awful")
 local beautiful = require("beautiful")
 
-local keys = require("core.keys")
+local keys = require("config.keys")
 
 awful.rules.rules = {
     {
