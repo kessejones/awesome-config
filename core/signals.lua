@@ -7,6 +7,8 @@ local ch = require("helpers.client")
 local Key = require("libs.key")
 local MouseButton = require("libs.key.mouse_button")
 
+local ui = require("helpers.ui")
+
 local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
 
@@ -221,5 +223,11 @@ client.connect_signal("tagged", function(c)
         request_titlebar(c)
     else
         awful.titlebar.hide(c)
+    end
+end)
+
+client.connect_signal("request::activate", function(c, origin)
+    if origin == "client.focus.bydirection" or origin == "client.focus.global_bydirection" then
+        ui.move_cursor_to_window(c, true)
     end
 end)

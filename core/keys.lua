@@ -116,8 +116,6 @@ local function focus_client_direction(dir)
         end
         if #awful.screen.focused().clients == 0 then
             client.focus = nil
-        else
-            helper.move_cursor_to_window(client.focus, true)
         end
     end)
 end
