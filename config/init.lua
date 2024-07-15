@@ -19,8 +19,9 @@ config.apps = {
 config.layouts = {
     awful.layout.suit.fair,
     awful.layout.suit.tile,
-    awful.layout.suit.tile.top,
     awful.layout.suit.tile.bottom,
+    awful.layout.suit.tile.left,
+    awful.layout.suit.tile.top,
     awful.layout.suit.floating,
 }
 
