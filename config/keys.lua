@@ -109,7 +109,12 @@ end
 local function focus_client_direction(dir)
     local c = client.focus
     local s = awful.screen.focused()
-    awful.client.focus.global_bydirection(dir)
+
+    if c.fullscreen and s:get_next_in_direction(dir) == nil then
+        return
+    end
+
+    awful.client.focus.global_bydirection(dir, c, true)
     gears.timer.delayed_call(function()
         if c == client.focus and s == awful.screen.focused() then
             return
