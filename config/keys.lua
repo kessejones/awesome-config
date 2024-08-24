@@ -153,6 +153,12 @@ local function move_client_direction(dir, wide)
         if x == client_focused.x and y == client_focused.y then
             local screen_in_direction = client_focused.screen:get_next_in_direction(dir)
             if screen_in_direction then
+                -- NOTE: move to screen and set position relative by direction
+                if dir == Direction.Left then
+                    client_focused.x = screen_in_direction.geometry.width - client_focused.width
+                elseif dir == Direction.Right then
+                    client_focused.x = 0
+                end
                 client_focused:move_to_screen(screen_in_direction)
             end
         end
