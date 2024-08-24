@@ -110,7 +110,7 @@ local function focus_client_direction(dir)
     local c = client.focus
     local s = awful.screen.focused()
 
-    if c.fullscreen and s:get_next_in_direction(dir) == nil then
+    if c ~= nil and c.fullscreen and s:get_next_in_direction(dir) == nil then
         return
     end
 
