@@ -90,9 +90,9 @@ theme.fg_urgent = theme.xcolor10
 theme.fg_minimize = theme.xcolor10
 
 theme.useless_gap = 8
-theme.border_width = 3
+theme.border_width = 5
 theme.border_normal = theme.xcolorS0
-theme.border_focus = theme.xcolor2
+theme.border_focus = theme.xcolor11
 theme.border_marked = "#91231c"
 
 theme.menu_font = theme.font_name .. " 10"

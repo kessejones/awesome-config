@@ -12,7 +12,7 @@ else
     theme.wallpaper = themes_path .. "assets/wallpaper.png"
 end
 
-theme.border_radius = 8
+theme.border_radius = 10
 
 theme.topbar_icon_size = 16
 theme.font_icon = "Material Icons"

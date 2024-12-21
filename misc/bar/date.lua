@@ -57,13 +57,6 @@ function M.new(s)
     })
 
     calendar_popup:setup({
-        -- wibox.widget({
-        --     widget = wibox.widget.calendar.month,
-        --     date = os.date("*t"),
-        --     font = beautiful.font_text_with_size(12),
-        --     long_weekdays = true,
-        --     start_sunday = true,
-        -- }),
         require("misc.bar.calendar").new(),
         widget = wibox.container.margin,
         left = dpi(20),
