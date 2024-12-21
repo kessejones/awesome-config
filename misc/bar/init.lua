@@ -1,13 +1,11 @@
 local awful = require("awful")
 local wibox = require("wibox")
-local beautiful = require("beautiful")
-local gears = require("gears")
-local xresources = require("beautiful.xresources")
+local beautiful = require "beautiful"
+local xresources = require "beautiful.xresources"
 local dpi = xresources.apply_dpi
 
 local Key = require("libs.key")
 local MouseButton = require("libs.key.mouse_button")
-
 local tags = require("misc.bar.tags")
 
 local M = {}
@@ -28,6 +26,8 @@ function M.new(s)
     local layoutbox = require("misc.bar.layoutbox").new(s)
     local battery = require("misc.bar.battery").new()
     local systray = require("misc.bar.systray").new()
+    local memory = require("misc.bar.memory").new()
+
     systray.visible = screen.primary == s
 
     layoutbox:buttons(Key.mouse_buttons({
@@ -89,8 +89,8 @@ function M.new(s)
             right = dpi(5),
             {
                 layout = wibox.layout.fixed.horizontal,
+                memory,
                 systray,
-                -- keyboardlayout,
                 volume,
                 battery,
                 layoutbox,
@@ -98,16 +98,6 @@ function M.new(s)
         },
     })
 
-    -- awesome.connect_signal("wibar::visibility", function(visible, screen)
-    --     if screen == s then
-    --         wibar.visible = visible
-    --     end
-    -- end)
-
-    -- awesome.connect_signal("wibar::systray", function()
-    --     systray.visible = screen.primary == s
-    -- end)
-    --
     s.wibar = wibar
 
     return wibar
