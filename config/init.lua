@@ -14,6 +14,9 @@ config.apps = {
     discord = "discord",
     filemanager = "nemo",
     screenshot = "scrot -e 'xclip -selection clipboard -t image/png -i $f' -s",
+
+    mouse_hint = "warpd --hint",
+    mouse_hint2 = "warpd --hint2",
 }
 
 config.layouts = {
