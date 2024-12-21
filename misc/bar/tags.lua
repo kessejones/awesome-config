@@ -11,7 +11,7 @@ local config = require("config")
 local Key = require("libs.key")
 local MouseButton = require("libs.key.mouse_button")
 
-local function update_tag(item, tag, index)
+local function update_tag(item, tag, _index)
     if tag.selected then
         item:get_children_by_id("tag")[1].markup = helper.colorize_text("", beautiful.border_focus)
     elseif #tag:clients() > 0 then

@@ -12,7 +12,7 @@ local M = {}
 function M.new(s)
     local icon = wibox.widget({
         widget = wibox.widget.imagebox,
-        image = beautiful.get_asset("catppuccin/assets/volume-on.png"),
+        image = beautiful.get_asset("assets/volume-on.png"),
         resize = true,
     })
 

@@ -22,7 +22,7 @@ function M.new()
             },
             shape_clip = true,
             widget = wibox.container.background,
-            bg = beautiful.wibar_widget_bg,
+            bg = beautiful.bg_systray,
             shape = function(cr, width, height)
                 gears.shape.rounded_rect(cr, width, height, 5)
             end,
