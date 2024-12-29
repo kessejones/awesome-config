@@ -46,41 +46,20 @@ function M.new()
         { "Terminal Fish", default.secondary_terminal },
     }
 
-    local internet_menu = {
-        { "Firefox", default.webbrowser },
-        { "Brave", default.secondary_webbrowser },
-        { "Discord", default.discord },
-    }
-
-    local menu_items = {
-        { "Awesome", awesome_menu, beautiful.awesome_icon },
-        { "Terminal", terminal_menu },
-        { "Internet", internet_menu },
-        { "Files", default.filemanager },
-        { "Applications", freedesktop.menu.build() },
-    }
-
-    local main_menu = awful.menu({
-        items = menu_items,
-        theme = {
-            icon_size = 16,
+    local menu = freedesktop.menu.build({
+        before = {
+            { "System", awesome_menu },
+            { "Terminal", terminal_menu },
         },
+
     })
-    main_menu:get_root().wibox.shape = gears.shape.rounded_rect
 
     local launcher = awful.widget.launcher({
         image = beautiful.awesome_icon,
-        -- menu = main_menu,
-        menu = freedesktop.menu.build({
-            before = {
-                { "System", awesome_menu },
-                { "Terminal", terminal_menu },
-                -- { "Internet", internet_menu },
-                -- { "Files", default.filemanager },
-                -- { "Applications", freedesktop.menu.build() },
-            },
-        }),
-        clip_shape = gears.shape.squircle,
+        menu = menu,
+        clip_shape = function(cr, w, h)
+            gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
+        end
     })
 
     local widget = wibox.widget({

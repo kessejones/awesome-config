@@ -69,7 +69,8 @@ end
 -- Use MenuBar parsing utils to build a menu for Awesome
 -- @return awful.menu
 function menu.build(args)
-    local args = args or {}
+    args = args or {}
+
     local before = args.before or {}
     local after = args.after or {}
     local skip_items = args.skip_items or {}
