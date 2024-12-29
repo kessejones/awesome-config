@@ -6,6 +6,10 @@ local dpi = xresources.apply_dpi
 local wibox = require("wibox")
 local ui = require("helpers.ui")
 
+local Key = require('libs.key')
+
+local CalendarPopup = require('widgets.calendar')
+
 local M = {}
 
 function M.new(s)
@@ -40,38 +44,13 @@ function M.new(s)
         bottom = dpi(5),
     })
 
-    local calendar_popup = awful.popup({
-        screen = s,
-        ontop = true,
-        visible = false,
-        widget = wibox.container.background,
-        bg = beautiful.bg_color,
-        border_width = beautiful.border_width,
-        border_color = beautiful.border_focus,
-        placement = function(c)
-            awful.placement.top(c, { margins = dpi(40) })
-        end,
-        shape = function(cr, w, h)
-            gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
-        end,
-    })
+    local calendar_popup = CalendarPopup.new(s)
 
-    calendar_popup:setup({
-        require("misc.bar.calendar").new(),
-        widget = wibox.container.margin,
-        left = dpi(20),
-        right = dpi(20),
-        top = dpi(10),
-        bottom = dpi(10),
-    })
-
-    calendar_popup:connect_signal("mouse::leave", function()
-        calendar_popup.visible = false
-    end)
-
-    widget:buttons(gears.table.join(awful.button({}, 1, function()
-        calendar_popup.visible = not calendar_popup.visible
-    end)))
+    widget:buttons(Key.mouse_buttons({
+        [Key.no_mod(Key.MouseButton.Left)] = function ()
+            calendar_popup:toggle()
+        end
+    }))
 
     ui.add_hover_cursor(widget, "hand2")
 
