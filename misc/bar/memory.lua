@@ -17,17 +17,17 @@ local humam_readable = function(value)
     return string.format("%.2f %sB", value, suffixes[suffix])
 end
 
-local memory_script = "bash -c \"free -m | grep Mem | awk '{print $3, $7}'\""
+local memory_script = "bash -c \"free -m | grep Mem | awk '{print $2, $3}'\""
 
 function M.new()
     local watch_widget = wibox.widget({
         widget = awful.widget.watch(memory_script, 15, function(widget, stdout)
             local parts = gears.string.split(stdout, " ")
-            local used = tonumber(parts[1])
-            local available = tonumber(parts[2])
+            local total = tonumber(parts[1])
+            local used = tonumber(parts[2])
 
             local text = humam_readable(used)
-            if used >= (math.floor(available * 0.95)) then
+            if used >= (math.floor(total * 0.9)) then
                 text = '<span background="#f38ba8" foreground="#1e1e2e">' .. text .. '</span>'
             end
 
