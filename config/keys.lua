@@ -189,10 +189,10 @@ local global_keys = Key.create({
         awful.spawn(apps.secondary_terminal)
     end,
     ["y"] = function()
-        awful.spawn(apps.mouse_hint)
+        awful.spawn(apps.mouse_hint2)
     end,
     [Key.shifted("y")] = function()
-        awful.spawn(apps.mouse_hint2)
+        awful.spawn(apps.mouse_hint)
     end,
     ["u"] = function()
         awful.layout.inc(-1, screen.screen)
