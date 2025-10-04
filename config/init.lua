@@ -10,7 +10,6 @@ config.apps = {
     terminal = "ghostty",
     secondary_terminal = "ghostty",
     webbrowser = "librewolf",
-    secondary_webbrowser = "brave-browser",
     discord = "discord",
     filemanager = "nemo",
     screenshot = "scrot -e 'xclip -selection clipboard -t image/png -i $f' -s",

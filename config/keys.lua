@@ -185,9 +185,6 @@ local global_keys = Key.create({
     ["Return"] = function()
         awful.spawn(apps.terminal)
     end,
-    [";"] = function()
-        awful.spawn(apps.secondary_terminal)
-    end,
     ["y"] = function()
         awful.spawn(apps.mouse_hint2)
     end,
@@ -226,6 +223,7 @@ local global_keys = Key.create({
     [Key.no_mod("XF86AudioMute")] = function()
         require("libs.pulseaudio").toggle_mute()
     end,
+
     -- [Key.no_mod("XF86AudioRaiseVolume")] = function()
     --     require("libs.pulseaudio").volume_up()
     -- end,
