@@ -280,6 +280,16 @@ local global_keys = Key.create({
             awful.layout.set(awful.layout.suit.max.fullscreen)
         end
     end,
+    ["c"] = function()
+        local tag = awful.screen.focused().selected_tag
+        if tag.gap > 0 then
+            tag.old_gap = tag.gap
+            tag.gap = 0
+        else
+            tag.gap = tag.old_gap
+            tag.old_gap = 0
+        end
+    end,
 })
 
 local client_keys = Key.create({

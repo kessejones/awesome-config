@@ -42,4 +42,13 @@ awful.rules.rules = {
             placement = awful.placement.centered,
         },
     },
+    {
+        rule_any = {
+            role = { "PictureInPicture" },
+            name = { "Picture-in-picture" },
+        },
+        properties = {
+            focus = awful.client.focus.filter,
+        },
+    },
 }
