@@ -5,6 +5,7 @@ if awesome.startup_errors then
         preset = naughty.config.presets.critical,
         title = "Oops, there were errors during startup!",
         text = awesome.startup_errors,
+        height = 400,
     })
 end
 
@@ -20,6 +21,7 @@ do
             preset = naughty.config.presets.critical,
             title = "Oops, an error happened!",
             text = tostring(err),
+            height = 400,
         })
         in_error = false
     end)

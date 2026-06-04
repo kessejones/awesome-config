@@ -21,10 +21,10 @@ local function update_tag(item, tag, _index)
     end
 end
 
-local M = {}
+local function new(args)
+    local screen = args.screen
 
-function M.new(s)
-    awful.tag(config.tags, s, awful.layout.layouts[1])
+    awful.tag(config.tags, screen, awful.layout.layouts[1])
 
     local taglist_buttons = require("libs.key").mouse_buttons({
         [Key.no_mod(MouseButton.Left)] = function(t)
@@ -50,7 +50,7 @@ function M.new(s)
     })
 
     local taglist = awful.widget.taglist({
-        screen = s,
+        screen = screen,
         filter = awful.widget.taglist.filter.all,
         buttons = taglist_buttons,
         style = {
@@ -60,11 +60,11 @@ function M.new(s)
             id = "tag",
             font = beautiful.font_icon_with_size(beautiful.topbar_icon_size),
             widget = wibox.widget.textbox,
-            create_callback = function(self, c3, index, object)
+            create_callback = function(self, c3, index, _object)
                 update_tag(self, c3, index)
                 ui.add_hover_cursor(self, "hand2")
             end,
-            update_callback = function(self, c3, index, object)
+            update_callback = function(self, c3, index, _object)
                 update_tag(self, c3, index)
             end,
         },
@@ -100,4 +100,10 @@ function M.new(s)
     return widget
 end
 
-return M
+return setmetatable({ new = new }, {
+    __call = function(_table, args)
+        args = args or {}
+
+        return new(args)
+    end,
+})

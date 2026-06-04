@@ -7,10 +7,13 @@ local dpi = xresources.apply_dpi
 
 local ui = require("helpers.ui")
 
-local M = {}
+local Key = require("libs.key")
+local MouseButton = require("libs.key.mouse_button")
 
-function M.new(s)
-    local layoutbox = awful.widget.layoutbox(s)
+local function new(args)
+    local screen = args.screen
+
+    local layoutbox = awful.widget.layoutbox(screen)
     layoutbox._layoutbox_tooltip.margins = beautiful.tooltip_margins
 
     local widget = wibox.widget({
@@ -40,9 +43,29 @@ function M.new(s)
         bottom = dpi(5),
     })
 
+    widget:buttons(Key.mouse_buttons({
+        [Key.no_mod(MouseButton.Left)] = function()
+            awful.layout.inc(1)
+        end,
+        [Key.no_mod(MouseButton.Right)] = function()
+            awful.layout.inc(-1)
+        end,
+        [Key.no_mod(MouseButton.Up)] = function()
+            awful.layout.inc(1)
+        end,
+        [Key.no_mod(MouseButton.Down)] = function()
+            awful.layout.inc(-1)
+        end,
+    }))
+
     ui.add_hover_cursor(widget, "hand2")
 
     return widget
 end
 
-return M
+return setmetatable({ new = new }, {
+    __call = function(_table, args)
+        args = args or {}
+        return new(args)
+    end,
+})

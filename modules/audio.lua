@@ -5,6 +5,8 @@ local ok, pa = pcall(require, "libpa")
 
 if not ok then
     naughty.notify({
+        preset = naughty.config.presets.critical,
+        title = "Audio Setup",
         text = "error to load libpa",
     })
 end

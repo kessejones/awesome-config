@@ -1,4 +1,3 @@
-local awful = require("awful")
 local gears = require("gears")
 local beautiful = require("beautiful")
 local xresources = require("beautiful.xresources")
@@ -6,13 +5,10 @@ local dpi = xresources.apply_dpi
 local wibox = require("wibox")
 local ui = require("helpers.ui")
 
-local Key = require('libs.key')
+local Key = require("libs.key")
+local widgets = require("widgets")
 
-local CalendarPopup = require('widgets.calendar')
-
-local M = {}
-
-function M.new(s)
+local function new(args)
     local textclock = wibox.widget.textclock("%d/%m/%Y - %H:%M")
     textclock.font = beautiful.font_text_with_size(beautiful.wibar_widget_font_size, "Bold")
     textclock.fg = beautiful.xcolorT0
@@ -44,12 +40,14 @@ function M.new(s)
         bottom = dpi(5),
     })
 
-    local calendar_popup = CalendarPopup.new(s)
+    local calendar_popup = widgets.calendar({ screen = args.screen })
+
+    widget.calendar_popup = calendar_popup
 
     widget:buttons(Key.mouse_buttons({
-        [Key.no_mod(Key.MouseButton.Left)] = function ()
-            calendar_popup:toggle()
-        end
+        [Key.no_mod(Key.MouseButton.Left)] = function()
+            calendar_popup.visible = not calendar_popup.visible
+        end,
     }))
 
     ui.add_hover_cursor(widget, "hand2")
@@ -57,4 +55,10 @@ function M.new(s)
     return widget
 end
 
-return M
+return setmetatable({
+    new = new,
+}, {
+    __call = function(_table, args)
+        return new(args or {})
+    end,
+})

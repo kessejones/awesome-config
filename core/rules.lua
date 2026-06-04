@@ -21,24 +21,13 @@ awful.rules.rules = {
         },
     },
     {
-        rule = { class = "firefox" },
-        properties = {
-            border_width = beautiful.border_width,
-            border_color = beautiful.border_normal,
-            maximized = false,
-            floating = false,
-            requests_no_titlebar = true,
-        },
-    },
-    {
         rule_any = {
             type = { "dialog" },
-            class = { "Gnome-calculator", "Steam", "firefox" },
+            class = { "Steam", "firefox" },
         },
         except = { instance = "Navigator" },
         properties = {
             floating = true,
-            requests_no_titlebar = false,
             placement = awful.placement.centered,
         },
     },

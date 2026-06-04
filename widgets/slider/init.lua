@@ -6,9 +6,7 @@ local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
 local str = require("helpers.string")
 
-local M = {}
-
-function M.new(args)
+local function new(args)
     args = args or {}
 
     local widget_slider = wibox.widget({
@@ -83,11 +81,15 @@ function M.new(args)
             forced_width = dpi(250),
             spacing = dpi(10),
         },
-        set_value = function(self, value)
-            widget_slider.value = value
-            widget_text.markup = str.pad_left(value, 3, " ") .. "%"
+        set_value = function(_self, value)
+            value = value or 0
+            widget_slider.value = tonumber(value)
+            widget_text.markup = str.pad_left(tostring(value), 3, " ") .. "%"
         end,
-        set_icon = function(self, value)
+        get_value = function(_self)
+            return widget_slider.value
+        end,
+        set_icon = function(_self, value)
             widget_icon.markup = value
         end,
     })
@@ -95,4 +97,9 @@ function M.new(args)
     return widget
 end
 
-return M
+return setmetatable({ new = new }, {
+    __call = function(_table, args)
+        args = args or {}
+        return new(args)
+    end,
+})

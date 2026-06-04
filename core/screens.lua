@@ -1,9 +1,6 @@
 local awful = require("awful")
-local helper = require("helpers")
+local modules = require("modules")
 
-awful.screen.connect_for_each_screen(function(s)
-    -- Wallpaper
-    helper.wallpaper.set(s)
-
-    require("misc.bar").new(s)
+awful.screen.connect_for_each_screen(function(screen)
+    modules.screen.init(screen)
 end)

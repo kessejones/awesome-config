@@ -1,22 +1,25 @@
-local beautiful = require('beautiful')
-local awful = require('awful')
-local wibox = require('wibox')
-local gears = require('gears')
+local beautiful = require("beautiful")
+local awful = require("awful")
+local wibox = require("wibox")
+local gears = require("gears")
 local xresources = require("beautiful.xresources")
 
 local dpi = xresources.apply_dpi
 
-local Year = require('widgets.calendar.year');
+local key = require("libs.key")
 
-local Calander = {}
+local Year = require("widgets.calendar.year")
 
-function Calander.new(s)
+local function new(args)
+    local screen = args.screen
+
     local today = os.date("*t")
 
     local popup = awful.popup({
-        screen = s,
+        screen = screen,
         ontop = true,
         visible = false,
+        hide_on_right_click = true,
         widget = wibox.container.background,
         bg = beautiful.bg_color,
         border_width = beautiful.border_width,
@@ -32,7 +35,7 @@ function Calander.new(s)
     local year_widget = Year.new(today.year)
 
     popup:setup({
-        year_widget:widget(),
+        year_widget,
         widget = wibox.container.margin,
         left = dpi(20),
         right = dpi(20),
@@ -41,25 +44,19 @@ function Calander.new(s)
     })
 
     popup:connect_signal("property::visible", function()
-        local year = os.date("*t").year
-        year_widget:set_year(year)
+        if not popup.visible then
+            year_widget.date = { year = today.year }
+        end
     end)
 
-    return setmetatable({
-        screen = s,
-        widgets = {
-            root = popup,
-            year = year_widget,
-        },
-    }, { __index = Calander })
+    return popup
 end
 
-function Calander:show()
-    self.widgets.root.visible = true
-end
-
-function Calander:toggle()
-    self.widgets.root.visible = not self.widgets.root.visible
-end
-
-return Calander
+return setmetatable({
+    new = new,
+}, {
+    __call = function(_table, args)
+        args = args or {}
+        return new(args)
+    end,
+})

@@ -7,11 +7,15 @@ local audio = require("modules.audio")
 local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
 
-local M = {}
+local key = require("libs.key")
+local MouseButton = key.MouseButton
+local widgets = require("widgets")
 
-function M.new(s)
+local function new(args)
+    local screen = args.screen
+
     local widget = awful.popup({
-        screen = s,
+        screen = screen,
         ontop = true,
         visible = false,
         widget = wibox.container.background,
@@ -28,19 +32,37 @@ function M.new(s)
         end,
     })
 
-    local output_volume = require("misc.audio.slider").new({
+    local output_volume = widgets.slider({
         on_change = function(value)
             audio.sink_set_volume(value)
         end,
         icon = "",
     })
 
-    local input_volume = require("misc.audio.slider").new({
+    output_volume:buttons(key.mouse_buttons({
+        [key.no_mod(MouseButton.Up)] = function()
+            output_volume.value = output_volume.value + 1
+        end,
+        [key.no_mod(MouseButton.Down)] = function()
+            output_volume.value = output_volume.value - 1
+        end,
+    }))
+
+    local input_volume = widgets.slider({
         on_change = function(value)
             audio.source_set_volume(value)
         end,
         icon = "",
     })
+
+    input_volume:buttons(key.mouse_buttons({
+        [key.no_mod(MouseButton.Up)] = function()
+            input_volume.value = input_volume.value + 1
+        end,
+        [key.no_mod(MouseButton.Down)] = function()
+            input_volume.value = input_volume.value - 1
+        end,
+    }))
 
     widget:setup({
         layout = wibox.layout.fixed.vertical,
@@ -66,11 +88,27 @@ function M.new(s)
         output_volume.value = volume
     end)
 
+    local mouseLeaveTimer = gears.timer({
+        timeout = 3,
+        callback = function()
+            widget.visible = false
+        end,
+    })
+
+    widget:connect_signal("mouse::enter", function()
+        mouseLeaveTimer:stop()
+    end)
+
     widget:connect_signal("mouse::leave", function()
-        widget.visible = false
+        mouseLeaveTimer:start()
     end)
 
     return widget
 end
 
-return M
+return setmetatable({ new = new }, {
+    __call = function(_table, args)
+        args = args or {}
+        return new(args)
+    end,
+})

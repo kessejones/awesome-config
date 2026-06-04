@@ -1,4 +1,4 @@
-local gears = require('gears')
+local gears = require("gears")
 local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
 local gfs = require("gears.filesystem")
@@ -6,7 +6,7 @@ local theme_assets = require("beautiful.theme_assets")
 local themes_path = gfs.get_configuration_dir() .. "themes"
 
 local helpers = require("helpers")
-local colors = require('themes.catppuccin')
+local colors = require("themes.catppuccin")
 
 local theme = gears.table.merge(colors, {})
 
@@ -59,7 +59,7 @@ theme.fg_minimize = theme.xcolor10
 
 -- border
 theme.useless_gap = 8
-theme.border_width = 5
+theme.border_width = 3
 theme.border_normal = theme.xcolorS0
 theme.border_focus = theme.xcolor11
 theme.border_marked = theme.xcolor6

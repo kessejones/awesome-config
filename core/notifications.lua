@@ -3,6 +3,7 @@ local beautiful = require("beautiful")
 local menubar = require("menubar")
 
 naughty.config.defaults.border_width = beautiful.notification_border_width
+naughty.config.defaults.height = 400
 naughty.config.presets.critical.timeout = 0
 naughty.config.presets.critical.bg = beautiful.xcolormantle
 
@@ -12,6 +13,7 @@ naughty.config.presets.critical.border_color = beautiful.xcolor10
 
 naughty.config.notify_callback = function(args)
     args.border_color = naughty.config.presets[args.urgency or "normal"].border_color or beautiful.xcolor6
+    args.height = 400
 
     return args
 end

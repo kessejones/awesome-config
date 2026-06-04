@@ -5,8 +5,6 @@ local xresources = require("beautiful.xresources")
 local gears = require("gears")
 local dpi = xresources.apply_dpi
 
-local M = {}
-
 local humam_readable = function(value)
     local suffixes = { "M", "G", "T", "P", "E", "Z", "Y" }
     local suffix = 1
@@ -19,7 +17,7 @@ end
 
 local memory_script = "bash -c \"free -m | grep Mem | awk '{print $2, $3}'\""
 
-function M.new()
+local function new(_args)
     local watch_widget = wibox.widget({
         widget = awful.widget.watch(memory_script, 15, function(widget, stdout)
             local parts = gears.string.split(stdout, " ")
@@ -28,7 +26,7 @@ function M.new()
 
             local text = humam_readable(used)
             if used >= (math.floor(total * 0.9)) then
-                text = '<span background="#f38ba8" foreground="#1e1e2e">' .. text .. '</span>'
+                text = '<span background="#f38ba8" foreground="#1e1e2e">' .. text .. "</span>"
             end
 
             widget:set_markup(text)
@@ -67,4 +65,9 @@ function M.new()
     return widget
 end
 
-return M
+return setmetatable({ new = new }, {
+    __call = function(_table, args)
+        args = args or {}
+        return new(args)
+    end,
+})

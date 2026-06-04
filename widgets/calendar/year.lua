@@ -7,9 +7,9 @@ local dpi = xresources.apply_dpi
 local key = require("libs.key")
 local MouseButton = require("libs.key").MouseButton
 
-local Button = require('widgets.button')
+local Button = require("widgets.button")
 
-local Year = {}
+local observer = gears.object()
 
 local styles = {
     yearheader = {
@@ -19,15 +19,15 @@ local styles = {
             return string.format('<span font_desc="%s">%s</span>', font, t)
         end,
 
-        widget = function (widget, props)
+        widget = function(widget, props)
             local btn_prev = Button.new({
                 markup = "Prev",
             })
 
             btn_prev:buttons(key.mouse_buttons({
-                [key.no_mod(MouseButton.Left)] = function ()
-                    awesome.emit_signal("signal::calendar::prev_year", {})
-                end
+                [key.no_mod(MouseButton.Left)] = function()
+                    observer:emit_signal("signal::calendar::prev_year", {})
+                end,
             }))
 
             local btn_next = Button.new({
@@ -35,9 +35,9 @@ local styles = {
             })
 
             btn_next:buttons(key.mouse_buttons({
-                [key.no_mod(MouseButton.Left)] = function ()
-                    awesome.emit_signal("signal::calendar::next_year", {})
-                end
+                [key.no_mod(MouseButton.Left)] = function()
+                    observer:emit_signal("signal::calendar::next_year", {})
+                end,
             }))
 
             return wibox.widget({
@@ -58,7 +58,7 @@ local styles = {
                 shape_border_width = props.border_width or 0,
                 widget = wibox.container.background,
             })
-        end
+        end,
     },
     month = {
         padding = 5,
@@ -71,7 +71,7 @@ local styles = {
             widget.shape = function(cr, w, h)
                 gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
             end
-        end
+        end,
     },
     normal = {
         padding = 5,
@@ -81,7 +81,7 @@ local styles = {
             widget.shape = function(cr, w, h)
                 gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
             end
-        end
+        end,
     },
     focus = {
         fg_color = beautiful.mantle,
@@ -107,7 +107,7 @@ local styles = {
     },
 }
 
-function Year.new(year)
+local function new(year)
     local function decorate_cell(widget, flag, _date)
         if flag == "monthheader" then
             flag = "header"
@@ -167,27 +167,19 @@ function Year.new(year)
         fn_embed = decorate_cell,
     })
 
-    awesome.connect_signal("signal::calendar::prev_year", function()
+    observer:connect_signal("signal::calendar::prev_year", function()
         widget.date = { year = widget.date.year - 1 }
     end)
 
-    awesome.connect_signal("signal::calendar::next_year", function()
+    observer:connect_signal("signal::calendar::next_year", function()
         widget.date = { year = widget.date.year + 1 }
     end)
 
-    return setmetatable({
-        widgets = {
-            root = widget,
-        },
-    }, { __index = Year })
+    return widget
 end
 
-function Year:set_year(year)
-    self.widgets.root.date = { year = year }
-end
-
-function Year:widget()
-    return self.widgets.root
-end
-
-return Year
+return setmetatable({ new = new }, {
+    __call = function(_table, ...)
+        return new(...)
+    end,
+})

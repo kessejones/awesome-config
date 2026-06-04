@@ -4,9 +4,7 @@ local gears = require("gears")
 local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
 
-local M = {}
-
-function M.new()
+local function new(_args)
     local systray = wibox.widget({
         widget = wibox.widget.systray,
         base_size = beautiful.systray_icon_size,
@@ -34,4 +32,9 @@ function M.new()
     return widget
 end
 
-return M
+return setmetatable({ new = new }, {
+    __call = function(_table, args)
+        args = args or {}
+        return new(args)
+    end,
+})

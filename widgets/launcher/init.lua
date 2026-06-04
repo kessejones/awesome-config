@@ -9,9 +9,7 @@ local default = require("config").apps
 local ui = require("helpers.ui")
 local freedesktop = require("libs.freedesktop")
 
-local M = {}
-
-function M.new()
+local function new(_args)
     local awesome_menu = {
         {
             "Poweroff",
@@ -51,7 +49,6 @@ function M.new()
             { "System", awesome_menu },
             { "Terminal", terminal_menu },
         },
-
     })
 
     local launcher = awful.widget.launcher({
@@ -59,7 +56,7 @@ function M.new()
         menu = menu,
         clip_shape = function(cr, w, h)
             gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
-        end
+        end,
     })
 
     local widget = wibox.widget({
@@ -94,4 +91,9 @@ function M.new()
     return widget
 end
 
-return M
+return setmetatable({ new = new }, {
+    __call = function(_table, args)
+        args = args or {}
+        return new(args)
+    end,
+})
