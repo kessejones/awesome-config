@@ -4,6 +4,10 @@ local beautiful = require("beautiful")
 local wibox = require("wibox")
 local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
+local audio = require("modules.audio")
+
+local key = require("libs.key")
+local MouseButton = key.MouseButton
 
 local ui = require("helpers.ui")
 
@@ -46,23 +50,23 @@ function M.new(s)
     })
 
     widget:buttons(gears.table.join(
-        awful.button({}, 1, function()
+        awful.button({}, MouseButton.Left, function()
             audio_menu.visible = not audio_menu.visible
         end),
-        awful.button({}, 2, function()
-            require("libs.pulseaudio").toggle_mute()
+        awful.button({}, MouseButton.Middle, function()
+            audio.sink_mute_toggle()
         end),
-        awful.button({}, 4, function()
-            require("libs.pulseaudio").volume_up()
+        awful.button({}, MouseButton.Up, function()
+            audio.sink_volume_up()
             widget_tooltip.visible = true
         end),
-        awful.button({}, 5, function()
-            require("libs.pulseaudio").volume_down()
+        awful.button({}, MouseButton.Down, function()
+            audio.sink_volume_down()
             widget_tooltip.visible = true
         end)
     ))
 
-    require("libs.pulseaudio").on_volume_change(function(volume, muted)
+    audio.on_sink_volume_changed(function(volume, muted)
         if muted then
             icon.image = beautiful.get_asset("catppuccin/assets/volume-off.png")
         else
@@ -74,7 +78,19 @@ function M.new(s)
 
     ui.add_hover_cursor(widget, "hand2")
 
+    local timerHover = gears.timer({
+        timeout = 3,
+        callback = function()
+            widget_tooltip.visible = true
+        end,
+    })
+
+    widget:connect_signal("mouse::enter", function()
+        timerHover:start()
+    end)
+
     widget:connect_signal("mouse::leave", function()
+        timerHover:stop()
         widget_tooltip.visible = false
     end)
 

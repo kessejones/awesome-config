@@ -2,6 +2,7 @@ local wibox = require("wibox")
 local awful = require("awful")
 local gears = require("gears")
 local beautiful = require("beautiful")
+local audio = require("modules.audio")
 
 local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
@@ -29,14 +30,14 @@ function M.new(s)
 
     local output_volume = require("misc.audio.slider").new({
         on_change = function(value)
-            require("libs.pulseaudio").set_volume(value)
+            audio.sink_set_volume(value)
         end,
         icon = "",
     })
 
     local input_volume = require("misc.audio.slider").new({
         on_change = function(value)
-            require("libs.pulseaudio").set_source_volume(value)
+            audio.source_set_volume(value)
         end,
         icon = "",
     })
@@ -50,22 +51,19 @@ function M.new(s)
 
     widget:connect_signal("property::visible", function()
         if widget.visible == true then
-            require("libs.pulseaudio").get_volume(function(volume)
-                output_volume.value = volume
-            end)
-
-            require("libs.pulseaudio").get_source_volume(function(volume)
-                input_volume.value = volume
-            end)
+            output_volume.value = audio.sink_get_volume()
+            input_volume.value = audio.source_get_volume()
         end
     end)
 
-    require("libs.pulseaudio").on_volume_change(function(volume, muted)
+    audio.on_sink_volume_changed(function(volume, muted)
         if muted then
             output_volume.icon = ""
         else
             output_volume.icon = ""
         end
+
+        output_volume.value = volume
     end)
 
     widget:connect_signal("mouse::leave", function()

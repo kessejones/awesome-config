@@ -2,6 +2,8 @@ local awful = require("awful")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 
+local audio = require("modules.audio")
+
 local M = {}
 
 function M.new(s)
@@ -19,7 +21,7 @@ function M.new(s)
         audio_menu.visible = not audio_menu.visible
     end))
 
-    require("libs.pulseaudio").on_volume_change(function(volume, muted)
+    audio.on_sink_volume_changed(function(_volume, muted)
         if muted then
             icon.markup = ""
         else
