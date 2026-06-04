@@ -1,5 +1,3 @@
-pcall(require, "luarocks.loader")
-
 require("error_handling")
 require("awful.autofocus")
 

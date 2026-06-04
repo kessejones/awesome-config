@@ -1,3 +1,3 @@
-local keys = require("config.keys")
+local keys = require("modules.keys")
 
-root.keys(keys.get_global_keys())
+root.keys(keys.global_keys)
