@@ -1,5 +1,11 @@
-return {
-    ui = require(... .. ".ui"),
-    wallpaper = require(... .. ".wallpaper"),
-    client = require(... .. ".client"),
-}
+return setmetatable({}, {
+    __index = function(_table, key)
+        local ok, module = pcall(require, "helpers." .. key)
+
+        if ok then
+            return module
+        end
+
+        return nil
+    end,
+})

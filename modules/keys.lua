@@ -1,7 +1,10 @@
 local awful = require("awful")
 local gears = require("gears")
+local wibox = require("wibox")
 local config = require("config")
 local helper = require("helpers.ui")
+
+local client_helper = require("helpers.client")
 
 local Key = require("libs.key")
 local MouseButton = require("libs.key.mouse_button")
@@ -144,26 +147,9 @@ local function move_client_direction(dir, wide)
         return
     end
 
-    -- NOTE: move window by direction or move to screen in direction
-    local x, y = client_focused.x, client_focused.y
-    awful.client.swap.bydirection(dir)
+    client_helper.swap_bydirection(dir, client_focused)
     gears.timer.delayed_call(function()
-        if x == client_focused.x and y == client_focused.y then
-            local screen_in_direction = client_focused.screen:get_next_in_direction(dir)
-            if screen_in_direction then
-                -- NOTE: move to screen and set position relative by direction
-                if dir == Direction.Left then
-                    client_focused.x = screen_in_direction.geometry.width - client_focused.width
-                elseif dir == Direction.Right then
-                    client_focused.x = 0
-                end
-                client_focused:move_to_screen(screen_in_direction)
-            end
-        end
-
-        gears.timer.delayed_call(function()
-            helper.move_cursor_to_window(client_focused, true)
-        end)
+        helper.move_cursor_to_window(client_focused, true)
     end)
 end
 

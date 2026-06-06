@@ -1,33 +1,35 @@
+local grect = require("gears.geometry").rectangle
+local awful = require("awful")
+
 local M = {}
 
-function M.add_placement(c, placement)
-    if placement == "left" then
-        c.placement_values.right = false
-        c.placement_values.right = false
+--- @see https://github.com/awesomeWM/awesome/blob/master/lib/awful/client.lua#L308
+--- @see https://github.com/awesomeWM/awesome/blob/master/lib/awful/client.lua#L342
+function M.swap_bydirection(dir, c, stacked)
+    local sel = c or awful.client.focus
+    if sel then
+        local cltbl = awful.client.visible(sel.screen, stacked)
+        local geomtbl = {}
+        for i, cl in ipairs(cltbl) do
+            geomtbl[i] = cl:geometry()
+        end
+        local target = grect.get_in_direction(dir, geomtbl, sel:geometry())
+
+        if target then
+            cltbl[target]:swap(sel)
+        else
+            local screen_in_direction = sel.screen:get_next_in_direction(dir)
+            if screen_in_direction then
+                if dir == "left" then
+                    sel.x = screen_in_direction.geometry.width - sel.width
+                elseif dir == "right" then
+                    sel.x = 0
+                end
+                sel:move_to_screen(screen_in_direction)
+                awful.screen.focus(sel.screen)
+            end
+        end
     end
-end
-
-function M.init_placement(c)
-    c.placement_values = {
-        centered = true,
-        top = false,
-        bottom = false,
-        left = false,
-        right = false,
-    }
-end
-
-function M.set_width(c, width)
-    c.width = width - (2 * c.border_width)
-end
-
-function M.set_height(c, height)
-    c.height = height - (2 * c.border_width)
-end
-
-function M.set_bordered_size(c, width, height)
-    M.set_height(c, height)
-    M.set_width(c, width)
 end
 
 return M
