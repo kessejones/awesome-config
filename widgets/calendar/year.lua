@@ -7,9 +7,7 @@ local dpi = xresources.apply_dpi
 local key = require("libs.key")
 local MouseButton = require("libs.key").MouseButton
 
-local Button = require("widgets.button")
-
-local observer = gears.object()
+local widgets = require("widgets")
 
 local styles = {
     yearheader = {
@@ -19,8 +17,8 @@ local styles = {
             return string.format('<span font_desc="%s">%s</span>', font, t)
         end,
 
-        widget = function(widget, props)
-            local btn_prev = Button.new({
+        widget = function(widget, props, observer)
+            local btn_prev = widgets.button({
                 markup = "Prev",
             })
 
@@ -30,7 +28,7 @@ local styles = {
                 end,
             }))
 
-            local btn_next = Button.new({
+            local btn_next = widgets.button({
                 markup = "Next",
             })
 
@@ -44,9 +42,9 @@ local styles = {
                 {
                     {
                         layout = wibox.layout.align.horizontal,
-                        btn_prev:widget(),
+                        btn_prev,
                         widget,
-                        btn_next:widget(),
+                        btn_next,
                     },
                     margins = (props.padding or 2) + (props.border_width or 0),
                     widget = wibox.container.margin,
@@ -108,6 +106,8 @@ local styles = {
 }
 
 local function new(year)
+    local observer = gears.object()
+
     local function decorate_cell(widget, flag, _date)
         if flag == "monthheader" then
             flag = "header"
@@ -120,7 +120,7 @@ local function new(year)
 
         local ret = nil
         if props.widget then
-            ret = props.widget(widget, props)
+            ret = props.widget(widget, props, observer)
         else
             ret = wibox.widget({
                 {

@@ -14,6 +14,8 @@ do
     end
 end
 
+require("core.dbus")
+
 require("core.layouts")
 require("core.screens")
 require("core.rules")

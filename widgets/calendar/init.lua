@@ -15,6 +15,25 @@ local function new(args)
 
     local today = os.date("*t")
 
+    -- local overlay = awful.popup({
+    --     screen = screen,
+    --     ontop = true,
+    --     visible = false,
+    --     widget = wibox.container.background,
+    --     bg = beautiful.transparent,
+    --     -- opacity = 0.3,
+    --     type = "dialog",
+    --     placement = function(c)
+    --         awful.placement.top(c, { margins = dpi(40) })
+    --     end,
+    -- })
+    --
+    -- overlay:setup({
+    --     widget = wibox.widget.background,
+    --     forced_width = screen.geometry.width,
+    --     forced_height = screen.geometry.height,
+    -- })
+    --
     local popup = awful.popup({
         screen = screen,
         ontop = true,
@@ -49,6 +68,22 @@ local function new(args)
         end
     end)
 
+    -- overlay:connect_signal("property::visible", function(self)
+    --     if not popup.visible then
+    --         year_widget.date = { year = today.year }
+    --     end
+    --
+    --     popup.visible = self.visible
+    -- end)
+    --
+    -- overlay:buttons(key.mouse_buttons({
+    --     [key.no_mod(key.MouseButton.Left)] = function()
+    --         popup.visible = false
+    --         overlay.visible = false
+    --     end,
+    -- }))
+
+    -- return overlay
     return popup
 end
 

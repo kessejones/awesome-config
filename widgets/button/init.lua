@@ -1,19 +1,14 @@
--- local gears = require("gears")
--- local beautiful = require("beautiful")
 local wibox = require("wibox")
--- local xresources = require("beautiful.xresources")
--- local dpi = xresources.apply_dpi
 
-local Button = {}
-
-function Button.new(args)
+local function new(args)
     args = args or {}
 
     local text = wibox.widget({
         widget = wibox.widget.textbox,
         markup = args.markup,
-        align = 'center',
-        valign = 'center',
+        align = "center",
+        valign = "center",
+        id = "text",
     })
 
     local background = wibox.widget({
@@ -27,29 +22,22 @@ function Button.new(args)
         fg = args.fg,
     })
 
-    local margin = wibox.widget({
+    local widget = wibox.widget({
         background,
         widget = wibox.container.margin,
         margin = args.margin,
+
+        set_text = function(self, value)
+            local text_widget = self:get_children_by_id("text")[0]
+            text_widget.markup = value
+        end,
     })
 
-    return setmetatable({
-        args = args,
-        widgets = {
-            text = text,
-            background = background,
-            margin = margin,
-            root = margin,
-        }
-    }, { __index = Button })
+    return widget
 end
 
-function Button:buttons(args)
-    self.widgets.margin:buttons(args)
-end
-
-function Button:widget()
-    return self.widgets.root;
-end
-
-return Button
+return setmetatable({ new = new }, {
+    __call = function(_table, args)
+        return new(args)
+    end,
+})

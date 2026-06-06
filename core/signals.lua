@@ -6,12 +6,14 @@ local ui = require("helpers.ui")
 local widgets = require("widgets")
 
 local function update_window_shape(c)
-    c.shape = function(cr, w, h)
-        local radius = 0
-        if not c.fullscreen and not c.maximized then
-            radius = beautiful.border_radius
+    if beautiful.border_rounded then
+        c.shape = function(cr, w, h)
+            local radius = 0
+            if not c.fullscreen and not c.maximized then
+                radius = beautiful.border_radius
+            end
+            gears.shape.rounded_rect(cr, w, h, radius)
         end
-        gears.shape.rounded_rect(cr, w, h, radius)
     end
 end
 

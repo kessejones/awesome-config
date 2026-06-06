@@ -28,7 +28,9 @@ local function new(args)
             awful.placement.top_right(c, { margins = dpi(40) })
         end,
         shape = function(cr, w, h)
-            gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
+            if beautiful.border_rounded then
+                gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
+            end
         end,
     })
 
@@ -78,7 +80,7 @@ local function new(args)
         end
     end)
 
-    audio.on_sink_volume_changed(function(volume, muted)
+    audio.on_sink_volume_changed(function(_, volume, muted)
         if muted then
             output_volume.icon = ""
         else

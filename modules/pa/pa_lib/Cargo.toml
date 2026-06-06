@@ -1,0 +1,11 @@
+[package]
+name = "pa"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+alsa = "0.11.0"
+mlua = { version = "0.11.6", features = ["lua51", "module"]}

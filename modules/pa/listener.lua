@@ -1,6 +1,7 @@
-local pa = require("modules.pa")
+package.cpath = package.cpath .. '/home/kesse/src/pa/target/debug/?.so;'
+local pa = require("libpa")
 
-pa.subscribe(function()
+pa.subscribe(function ()
     local command = [[
         awesome.emit_signal('signal::audio-event', nil)
     ]]

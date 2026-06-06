@@ -1,0 +1,3 @@
+[workspace]
+members = ["pa_lib", "pa_bin"]
+resolver = "3"
