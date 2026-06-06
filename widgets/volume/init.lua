@@ -1,7 +1,5 @@
-local awful = require("awful")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
-local gears = require("gears")
 local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
 
@@ -25,43 +23,23 @@ local function new(args)
         markup = "0%",
         align = "center",
         valign = "center",
+        font = beautiful.font_text_with_size(beautiful.wibar_widget_font_size, "Bold"),
     })
 
-    local widget = wibox.widget({
+    local widget = widgets.bar_item()
+    widget:setup({
+        icon,
         {
-            {
-                {
-                    {
-                        icon,
-                        {
-                            label,
-                            left = dpi(5),
-                            widget = wibox.container.margin,
-                        },
-                        layout = wibox.layout.align.horizontal,
-                    },
-                    widget = wibox.container.margin,
-                    top = dpi(2),
-                    bottom = dpi(2),
-                    left = dpi(10),
-                    right = dpi(10),
-                },
-                strategy = "exact",
-                layout = wibox.container.constraint,
-            },
-            widget = wibox.container.background,
-            bg = beautiful.wibar_widget_bg,
-            shape = function(cr, width, height)
-                gears.shape.rounded_rect(cr, width, height, 5)
-            end,
+            label,
+            left = dpi(5),
+            widget = wibox.container.margin,
         },
-        widget = wibox.container.margin,
-        margins = dpi(5),
+        layout = wibox.layout.align.horizontal,
     })
 
-    -- local widget_tooltip = awful.tooltip({
-    --     margins = beautiful.tooltip_margins,
-    -- })
+    -- -- local widget_tooltip = awful.tooltip({
+    -- --     margins = beautiful.tooltip_margins,
+    -- -- })
 
     local audio_menu = widgets.audio_menu({ screen = screen })
     widget:buttons(key.mouse_buttons({
@@ -81,16 +59,16 @@ local function new(args)
         end,
     }))
 
-    label.markup = string.format("%d%%", modules.audio.sink_get_volume())
+    label.markup = string.format("%d%%", modules.audio.sink_get_volume() or 0)
 
-    modules.audio.on_sink_volume_changed(function(volume, muted)
+    modules.audio.on_sink_volume_changed(function(_, volume, muted)
         if muted then
             icon.image = beautiful.get_asset("assets/volume-off.png")
         else
             icon.image = beautiful.get_asset("assets/volume-on.png")
         end
 
-        label.markup = string.format("%d%%", volume)
+        label.markup = string.format("%d%%", volume or 0)
         --
         -- widget_tooltip.text = string.format("Volume %d%%", volume)
     end)

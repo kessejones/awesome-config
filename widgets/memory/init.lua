@@ -5,6 +5,8 @@ local xresources = require("beautiful.xresources")
 local gears = require("gears")
 local dpi = xresources.apply_dpi
 
+local widgets = require("widgets")
+
 local humam_readable = function(value)
     local suffixes = { "M", "G", "T", "P", "E", "Z", "Y" }
     local suffix = 1
@@ -35,31 +37,11 @@ local function new(_args)
         spaccing = dpi(3),
     })
 
-    local widget = wibox.widget({
-        {
-            {
-                {
-                    watch_widget,
-                    widget = wibox.container.margin,
-                    top = dpi(2),
-                    bottom = dpi(2),
-                    left = dpi(10),
-                    right = dpi(10),
-                },
-                strategy = "exact",
-                layout = wibox.container.constraint,
-            },
-            widget = wibox.container.background,
-            bg = beautiful.wibar_widget_bg,
-            shape = function(cr, width, height)
-                gears.shape.rounded_rect(cr, width, height, 5)
-            end,
-        },
-        widget = wibox.container.margin,
-        left = dpi(5),
-        right = dpi(5),
-        top = dpi(5),
-        bottom = dpi(5),
+    local widget = widgets.bar_item()
+
+    widget:setup({
+        watch_widget,
+        layout = wibox.layout.fixed.horizontal,
     })
 
     return widget

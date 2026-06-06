@@ -27,11 +27,11 @@ local function new(args)
         placement = function(c)
             awful.placement.top_right(c, { margins = dpi(40) })
         end,
-        shape = function(cr, w, h)
-            if beautiful.border_rounded then
-                gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
-            end
-        end,
+        -- shape = function(cr, w, h)
+        --     if beautiful.border_rounded then
+        --         gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
+        --     end
+        -- end,
     })
 
     local output_volume = widgets.slider({
@@ -73,8 +73,8 @@ local function new(args)
         input_volume,
     })
 
-    widget:connect_signal("property::visible", function()
-        if widget.visible == true then
+    widget:connect_signal("property::visible", function(self)
+        if self.visible == true then
             output_volume.value = audio.sink_get_volume()
             input_volume.value = audio.source_get_volume()
         end
