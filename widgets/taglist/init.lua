@@ -89,6 +89,7 @@ local function new(args)
                 if button == MouseButton.Left then
                     _self:move_to_tag(tag)
                     move_to_cleanup()
+                    keygrabber:stop()
                 end
             end
 
