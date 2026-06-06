@@ -1,3 +1,7 @@
+local capi = {
+    screen = screen,
+}
+
 local awful = require("awful")
 local beautiful = require("beautiful")
 local xresources = require("beautiful.xresources")
@@ -60,36 +64,55 @@ local function new(args)
 
     local function mouse_move_client_to(widget, tag)
         local function right_click()
+            if tag.move_to_waiting then
+                if move_to_cleanup then
+                    move_to_cleanup()
+                end
+                tag.move_to_waiting = false
+                keygrabber:stop()
+                return
+            end
+
             if move_to_cleanup then
                 move_to_cleanup()
             end
 
             move_to_action = nil
             move_to_cleanup = nil
-            local _screen = awful.screen.focused()
-            local clients = _screen.selected_tag:clients()
 
-            if #clients == 0 or tag.selected then
+            local clients = {}
+            for s in capi.screen do
+                for _, c in ipairs(s:get_clients()) do
+                    table.insert(clients, c)
+                end
+            end
+
+            if #clients == 0 then
                 return
             end
 
+            tag.move_to_waiting = true
+
             widget.bg = beautiful.xcolor10
+            widget.shape_border_color = beautiful.xcolor10
 
             move_to_cleanup = function()
                 for _, c in ipairs(clients) do
                     c:disconnect_signal("button::press", move_to_action)
                 end
 
-                -- widget.bg = beautiful.xcolorS2
                 update_tag(widget, tag)
                 move_to_cleanup = nil
+                tag.move_to_waiting = false
             end
 
             move_to_action = function(_self, _x, _y, button)
                 if button == MouseButton.Left then
-                    _self:move_to_tag(tag)
-                    move_to_cleanup()
-                    keygrabber:stop()
+                    if _self.first_tag ~= tag then
+                        _self:move_to_tag(tag)
+                        move_to_cleanup()
+                        keygrabber:stop()
+                    end
                 end
             end
 

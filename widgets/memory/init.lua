@@ -1,46 +1,32 @@
-local awful = require("awful")
 local beautiful = require("beautiful")
 local wibox = require("wibox")
 local xresources = require("beautiful.xresources")
-local gears = require("gears")
 local dpi = xresources.apply_dpi
 
 local widgets = require("widgets")
-
-local humam_readable = function(value)
-    local suffixes = { "M", "G", "T", "P", "E", "Z", "Y" }
-    local suffix = 1
-    while value > 1024 do
-        value = value / 1024
-        suffix = suffix + 1
-    end
-    return string.format("%.2f %sB", value, suffixes[suffix])
-end
-
-local memory_script = "bash -c \"free -m | grep Mem | awk '{print $2, $3}'\""
+local memory = require("modules.memory")
 
 local function new(_args)
-    local watch_widget = wibox.widget({
-        widget = awful.widget.watch(memory_script, 15, function(widget, stdout)
-            local parts = gears.string.split(stdout, " ")
-            local total = tonumber(parts[1])
-            local used = tonumber(parts[2])
-
-            local text = humam_readable(used)
-            if used >= (math.floor(total * 0.9)) then
-                text = '<span background="#f38ba8" foreground="#1e1e2e">' .. text .. "</span>"
-            end
-
-            widget:set_markup(text)
-        end),
+    local textbox = wibox.widget({
+        widget = wibox.widget.textbox,
         font = beautiful.font_text_with_size(beautiful.wibar_widget_font_size, "Bold"),
         spaccing = dpi(3),
     })
 
+    memory.on_memory_updated(function(_, mem)
+        local text = memory.humam_readable(mem.used)
+
+        if mem.used >= (math.floor(mem.total * 0.9)) then
+            text = '<span background="#f38ba8" foreground="#1e1e2e">' .. text .. "</span>"
+        end
+
+        textbox.markup = text
+    end)
+
     local widget = widgets.bar_item()
 
     widget:setup({
-        watch_widget,
+        textbox,
         layout = wibox.layout.fixed.horizontal,
     })
 
