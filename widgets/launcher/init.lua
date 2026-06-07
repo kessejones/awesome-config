@@ -9,6 +9,8 @@ local default = require("config").apps
 local ui = require("helpers.ui")
 local freedesktop = require("libs.freedesktop")
 
+local widgets = require("widgets")
+
 local function new(_args)
     local awesome_menu = {
         {
@@ -40,8 +42,7 @@ local function new(_args)
     }
 
     local terminal_menu = {
-        { "Terminal Tmux", default.terminal },
-        { "Terminal Fish", default.secondary_terminal },
+        { "Terminal", default.terminal },
     }
 
     local menu = freedesktop.menu.build({
@@ -54,36 +55,13 @@ local function new(_args)
     local launcher = awful.widget.launcher({
         image = beautiful.awesome_icon,
         menu = menu,
-        clip_shape = function(cr, w, h)
-            gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
-        end,
     })
 
-    local widget = wibox.widget({
-        {
-            {
-                {
-                    launcher,
-                    widget = wibox.container.margin,
-                    left = dpi(5),
-                    right = dpi(5),
-                    top = dpi(5),
-                    bottom = dpi(5),
-                },
-                strategy = "exact",
-                layout = wibox.container.constraint,
-            },
-            widget = wibox.container.background,
-            bg = beautiful.wibar_widget_bg,
-            shape = function(cr, width, height)
-                gears.shape.rounded_rect(cr, width, height, 5)
-            end,
-        },
-        widget = wibox.container.margin,
-        left = dpi(5),
-        right = dpi(5),
-        top = dpi(5),
-        bottom = dpi(5),
+    local widget = widgets.bar_item()
+
+    widget:setup({
+        launcher,
+        layout = wibox.layout.fixed.horizontal,
     })
 
     ui.add_hover_cursor(widget, "hand2")

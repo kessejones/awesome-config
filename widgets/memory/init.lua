@@ -1,7 +1,5 @@
 local beautiful = require("beautiful")
 local wibox = require("wibox")
-local xresources = require("beautiful.xresources")
-local dpi = xresources.apply_dpi
 
 local widgets = require("widgets")
 local memory = require("modules.memory")
@@ -9,8 +7,9 @@ local memory = require("modules.memory")
 local function new(_args)
     local textbox = wibox.widget({
         widget = wibox.widget.textbox,
+        align = "center",
+        valign = "center",
         font = beautiful.font_text_with_size(beautiful.wibar_widget_font_size, "Bold"),
-        spaccing = dpi(3),
     })
 
     memory.on_memory_updated(function(_, mem)

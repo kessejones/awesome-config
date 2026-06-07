@@ -1,22 +1,9 @@
 local awful = require("awful")
 local wibox = require("wibox")
-local beautiful = require("beautiful")
 local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
 
 local widgets = require("widgets")
-
-local separator = wibox.widget({
-    widget = wibox.container.margin,
-    left = dpi(5),
-    right = dpi(5),
-    {
-        widget = wibox.widget.separator,
-        color = beautiful.border_normal,
-        orientation = "vertical",
-        forced_width = 5,
-    },
-})
 
 local function new(args)
     local screen = args.screen
@@ -50,7 +37,6 @@ local function new(args)
             {
                 layout = wibox.layout.align.horizontal,
                 launcher,
-                separator,
                 taglist,
             },
         },

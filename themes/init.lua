@@ -122,11 +122,11 @@ theme.notification_border_width = theme.border_width
 theme.notification_max_width = 400
 theme.notification_max_height = 400
 theme.notification_width = 400
-theme.notification_height = 50
+-- theme.notification_height = 50
 theme.notification_font = theme.font_text_with_size()
-theme.notification_shape = function(cr, w, h)
-    gears.shape.rounded_rect(cr, w, h, theme.border_radius)
-end
+-- theme.notification_shape = function(cr, w, h)
+--     gears.shape.rounded_rect(cr, w, h, theme.border_radius)
+-- end
 
 -- tooltips
 theme.tooltip_border_color = theme.border_focus

@@ -11,8 +11,8 @@ local function new(_args)
                 {
                     id = "content",
                     widget = wibox.container.margin,
-                    top = dpi(2),
-                    bottom = dpi(2),
+                    top = dpi(5),
+                    bottom = dpi(5),
                     left = dpi(10),
                     right = dpi(10),
                 },

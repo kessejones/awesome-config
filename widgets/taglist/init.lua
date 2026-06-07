@@ -14,6 +14,8 @@ local config = require("config")
 local Key = require("libs.key")
 local MouseButton = require("libs.key.mouse_button")
 
+local widgets = require("widgets")
+
 local function update_tag(item, tag)
     local widget = item:get_children_by_id("tag")[1]
     if tag.selected then
@@ -160,31 +162,11 @@ local function new(args)
         },
     })
 
-    local widget = wibox.widget({
-        {
-            {
-                {
-                    taglist,
-                    widget = wibox.container.margin,
-                    left = dpi(10),
-                    right = dpi(10),
-                    top = dpi(2),
-                    bottom = dpi(2),
-                },
-                strategy = "exact",
-                layout = wibox.container.constraint,
-            },
-            widget = wibox.container.background,
-            bg = beautiful.wibar_widget_bg,
-            shape = function(cr, width, height)
-                gears.shape.rounded_rect(cr, width, height, 5)
-            end,
-        },
-        widget = wibox.container.margin,
-        left = dpi(5),
-        right = dpi(5),
-        top = dpi(5),
-        bottom = dpi(5),
+    local widget = widgets.bar_item()
+
+    widget:setup({
+        taglist,
+        layout = wibox.layout.fixed.horizontal,
     })
 
     return widget
