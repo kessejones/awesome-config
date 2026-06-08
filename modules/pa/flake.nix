@@ -21,17 +21,7 @@
             cargo
             rust-analyzer
             pkg-config
-
-            lua5_1
             dbus
-
-            # pkgs.raylib
-            # pkgs.xorg.libXcursor
-            # pkgs.xorg.libXext
-            # pkgs.xorg.libXfixes
-            # pkgs.xorg.libXi
-            # pkgs.xorg.libXinerama
-            # pkgs.xorg.libXrandr
           ];
 
           buildInputs = libs;
