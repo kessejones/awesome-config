@@ -126,6 +126,26 @@ local function focus_client_direction(dir)
     end)
 end
 
+local function move_marked_clients(opts)
+    opts = opts or {}
+    local keep_marked = opts.keep_marked or false
+
+    local marked_clients = awful.client.getmarked()
+    local tag = awful.screen.focused().selected_tag
+
+    for _, c in ipairs(marked_clients) do
+        c:move_to_tag(tag)
+
+        if keep_marked then
+            c.marked = true
+        end
+    end
+
+    gears.timer.delayed_call(function(focused)
+        helper.move_cursor_to_window(focused, true)
+    end, client.focus)
+end
+
 local function move_client_direction(dir, wide)
     local client_focused = client.focus
     local screen = client_focused.screen
@@ -180,6 +200,12 @@ local global_keys = Key.create({
     end,
     ["i"] = function()
         awful.layout.inc(1, screen.screen)
+    end,
+    [Key.shifted("h")] = function()
+        awful.screen.focus_bydirection("left")
+    end,
+    [Key.shifted("l")] = function()
+        awful.screen.focus_bydirection("right")
     end,
     ["h"] = function()
         focus_client_direction("left")
@@ -268,6 +294,61 @@ local global_keys = Key.create({
             tag.old_gap = 0
         end
     end,
+    ["t"] = Key.create_keygrabber({
+        ["t"] = function()
+            local c = client.focus
+            c.marked = not c.marked
+        end,
+        ["Escape"] = function()
+            local marked_clients = awful.client.getmarked()
+            for _, c in ipairs(marked_clients) do
+                c.marked = false
+            end
+        end,
+        [Key.shifted("H")] = function()
+            awful.screen.focus_bydirection("left")
+        end,
+        [Key.shifted("L")] = function()
+            awful.screen.focus_bydirection("right")
+        end,
+        ["h"] = function()
+            focus_client_direction("left")
+        end,
+        ["l"] = function()
+            focus_client_direction("right")
+        end,
+        ["j"] = function()
+            focus_client_direction("down")
+        end,
+        ["k"] = function()
+            focus_client_direction("up")
+        end,
+        ["p"] = function()
+            local s = awful.screen.focused()
+            awful.tag.viewprev(s)
+        end,
+        ["n"] = function()
+            local s = awful.screen.focused()
+            awful.tag.viewnext(s)
+        end,
+        ["1"] = focus_tag(1),
+        ["2"] = focus_tag(2),
+        ["3"] = focus_tag(3),
+        ["4"] = focus_tag(4),
+        ["5"] = focus_tag(5),
+        ["6"] = focus_tag(6),
+        ["7"] = focus_tag(7),
+        ["8"] = focus_tag(8),
+        ["9"] = focus_tag(9),
+    }, {
+        start_callback = function()
+            local c = client.focus
+            c.marked = not c.marked
+        end,
+        stop_callback = function()
+            move_marked_clients()
+        end,
+    }),
 })
 
 local client_keys = Key.create({

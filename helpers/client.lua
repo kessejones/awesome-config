@@ -1,5 +1,6 @@
 local grect = require("gears.geometry").rectangle
 local awful = require("awful")
+local beautiful = require("beautiful")
 
 local M = {}
 
@@ -28,6 +29,18 @@ function M.swap_bydirection(dir, c, stacked)
                 sel:move_to_screen(screen_in_direction)
                 awful.screen.focus(sel.screen)
             end
+        end
+    end
+end
+
+function M.update_border(c)
+    if c.marked then
+        c.border_color = beautiful.border_marked
+    else
+        if client.focus == c then
+            c.border_color = beautiful.border_focus
+        else
+            c.border_color = beautiful.border_normal
         end
     end
 end

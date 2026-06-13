@@ -2,6 +2,7 @@ local beautiful = require("beautiful")
 local gears = require("gears")
 local awful = require("awful")
 local ui = require("helpers.ui")
+local helper = require("helpers")
 
 local widgets = require("widgets")
 
@@ -77,12 +78,16 @@ client.connect_signal("property::minimized", function(c)
     c.minimized = false
 end)
 
+client.connect_signal("property::marked", function(c)
+    helper.client.update_border(c)
+end)
+
 client.connect_signal("focus", function(c)
-    c.border_color = beautiful.border_focus
+    helper.client.update_border(c)
 end)
 
 client.connect_signal("unfocus", function(c)
-    c.border_color = beautiful.border_normal
+    helper.client.update_border(c)
 end)
 
 client.connect_signal("property::fullscreen", function(c)

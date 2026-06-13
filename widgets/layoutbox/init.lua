@@ -6,6 +6,7 @@ local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
 
 local ui = require("helpers.ui")
+local widgets = require("widgets")
 
 local Key = require("libs.key")
 local MouseButton = require("libs.key.mouse_button")
@@ -16,31 +17,11 @@ local function new(args)
     local layoutbox = awful.widget.layoutbox(screen)
     layoutbox._layoutbox_tooltip.margins = beautiful.tooltip_margins
 
-    local widget = wibox.widget({
-        {
-            {
-                {
-                    layoutbox,
-                    widget = wibox.container.margin,
-                    left = dpi(5),
-                    right = dpi(5),
-                    top = dpi(5),
-                    bottom = dpi(5),
-                },
-                strategy = "exact",
-                layout = wibox.container.constraint,
-            },
-            widget = wibox.container.background,
-            bg = beautiful.wibar_widget_bg,
-            shape = function(cr, width, height)
-                gears.shape.rounded_rect(cr, width, height, 5)
-            end,
-        },
-        widget = wibox.container.margin,
-        left = dpi(5),
-        right = dpi(5),
-        top = dpi(5),
-        bottom = dpi(5),
+    local widget = widgets.bar_item()
+
+    widget:setup({
+        layoutbox,
+        layout = wibox.layout.fixed.horizontal,
     })
 
     widget:buttons(Key.mouse_buttons({

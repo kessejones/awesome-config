@@ -40,11 +40,15 @@ function M.create(keys_list)
     return gears.table.join(unpack(keys))
 end
 
-function M.create_keygrabber(keys_list)
+function M.create_keygrabber(keys_list, opts)
+    opts = opts or {}
+
     return awful.keygrabber({
         keybindings = build_keybindinds(keys_list),
         stop_key = mod_key,
         stop_event = "release",
+        start_callback = opts.start_callback or nil,
+        stop_callback = opts.stop_callback or nil,
     })
 end
 
@@ -54,6 +58,10 @@ end
 
 function M.shifted(key)
     return { { mod_key, Modifier.Shift }, key }
+end
+
+function M.only_shifted(key)
+    return { { Modifier.Shift }, key }
 end
 
 function M.mouse_buttons(buttons_list)
