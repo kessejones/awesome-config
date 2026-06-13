@@ -1,8 +1,10 @@
 local wibox = require("wibox")
 local beautiful = require("beautiful")
+local gears = require("gears")
 local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
 
+local ui = require("helpers.ui")
 local modules = require("modules")
 local widgets = require("widgets")
 
@@ -59,7 +61,11 @@ local function new(args)
         end,
     }))
 
-    label.markup = string.format("%d%%", modules.audio.sink_get_volume() or 0)
+    ui.add_hover_cursor(widget, "hand2")
+
+    gears.timer.delayed_call(function()
+        label.markup = string.format("%d%%", modules.audio.sink_get_volume() or 0)
+    end)
 
     modules.audio.on_sink_volume_changed(function(_, volume, muted)
         if muted then

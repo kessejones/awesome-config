@@ -1,6 +1,4 @@
-
-package.cpath = package.cpath .. '/home/kesse/src/pa/target/debug/?.so;'
--- local path = "/home/kesse/src/pa/target/debug/libpa.so"
+package.cpath = package.cpath .. ";" .. os.getenv("HOME") .. "/.config/awesome/modules/pa/result/lib/?.so;"
 local pa = require("libpa")
 
 -- print(package.cpath)

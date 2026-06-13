@@ -5,4 +5,4 @@ if pgrep -x pa_bin >/dev/null; then
 fi
 
 DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-$DIR/target/release/pa_bin
+$DIR/result/bin/pa_bin
